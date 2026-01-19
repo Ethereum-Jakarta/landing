@@ -6,7 +6,9 @@
 	import Dawaey from '../assets/Dawaey.svelte';
 </script>
 
-<footer class="relative flex min-h-80 flex-col justify-between overflow-hidden bg-very-tertiary px-10 py-10 text-tertiary-foreground lg:min-h-96 lg:px-16 lg:py-12">
+<footer
+	class="relative flex min-h-80 flex-col justify-between overflow-hidden bg-very-tertiary px-10 py-10 text-tertiary-foreground lg:min-h-96 lg:px-16 lg:py-12"
+>
 	<!-- Top section -->
 	<div class="flex flex-col gap-6">
 		<Logo useAlt class="-translate-x-7" />
@@ -15,13 +17,22 @@
 		</p>
 		<!-- Social icons -->
 		<div class="flex items-center gap-4">
-			<a href="https://discord.gg/ethjkt" class="text-tertiary-foreground transition-opacity hover:opacity-70">
+			<a
+				href="https://discord.gg/ethjkt"
+				class="text-tertiary-foreground transition-opacity hover:opacity-70"
+			>
 				<DiscordIcon />
 			</a>
-			<a href="https://instagram.com/ethjkt" class="text-tertiary-foreground transition-opacity hover:opacity-70">
+			<a
+				href="https://instagram.com/ethjkt"
+				class="text-tertiary-foreground transition-opacity hover:opacity-70"
+			>
 				<InstagramIcon />
 			</a>
-			<a href="https://x.com/ethjkt" class="text-tertiary-foreground transition-opacity hover:opacity-70">
+			<a
+				href="https://x.com/ethjkt"
+				class="text-tertiary-foreground transition-opacity hover:opacity-70"
+			>
 				<XTwitterIcon />
 			</a>
 		</div>
@@ -33,5 +44,5 @@
 	</p>
 
 	<!-- Character illustration -->
-	<Dawaey class="absolute bottom-0 right-10 lg:right-20" />
+	<Dawaey class="absolute right-10 bottom-0 lg:right-20" />
 </footer>

@@ -26,7 +26,7 @@
 				'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 			bgColor: 'bg-secondary',
 			textColor: 'text-tertiary',
-			image: AboutLeftImage 
+			image: AboutLeftImage
 		},
 		{
 			icon: AboutInnovation,
@@ -74,7 +74,7 @@
 			});
 		});
 
-		subtitleWords.forEach((word, i) => {
+		subtitleWords.forEach((word) => {
 			gsap.set(word, {
 				y: 50,
 				opacity: 0,
@@ -414,12 +414,15 @@
 						bind:this={imageElements[index]}
 						src={card.image}
 						alt="{card.title} illustration"
-						class="about-image absolute left-0 top-0 h-auto w-full"
+						class="about-image absolute top-0 left-0 h-auto w-full"
 					/>
 				{/each}
 			</div>
 
-			<div bind:this={cardsContainer} class="cards-container relative w-full lg:w-[45%] lg:max-w-[638px] lg:shrink">
+			<div
+				bind:this={cardsContainer}
+				class="cards-container relative w-full lg:w-[45%] lg:max-w-[638px] lg:shrink"
+			>
 				<div
 					bind:this={cardsWrapper}
 					class="cards-wrapper relative mx-auto h-[380px] w-full lg:h-[518px]"
@@ -431,8 +434,14 @@
 							class="{card.bgColor} card-item absolute top-0 right-0 left-0 flex h-[200px] flex-col rounded-[28px] px-6 pt-5 lg:h-[272px] lg:rounded-[54px] lg:px-8 lg:pt-7"
 						>
 							<div class="flex items-center gap-3 lg:gap-4">
-								<img src={card.icon} alt={card.title} class="h-8 w-8 shrink-0 md:h-10 md:w-10 lg:h-11 lg:w-11" />
-								<h3 class="font-montserrat text-xl font-bold {card.textColor} md:text-2xl lg:text-3xl">
+								<img
+									src={card.icon}
+									alt={card.title}
+									class="h-8 w-8 shrink-0 md:h-10 md:w-10 lg:h-11 lg:w-11"
+								/>
+								<h3
+									class="font-montserrat text-xl font-bold {card.textColor} md:text-2xl lg:text-3xl"
+								>
 									{card.title}
 								</h3>
 							</div>
