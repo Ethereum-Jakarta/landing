@@ -26,6 +26,7 @@
 	let ofSign: HTMLSpanElement;
 	let bird1: SVGSVGElement;
 	let bird2: SVGSVGElement;
+	let bird3: SVGSVGElement;
 
 	// Cloud elements for animation
 	let cloudContainer: HTMLDivElement;
@@ -175,8 +176,6 @@
 			}
 		});
 
-		gsap.set(ctaButton, { opacity: 0, y: -20 });
-
 		// Animate each letter with its assigned animation type
 		allLetters.forEach((letter, i) => {
 			const type = letterAnimations[i];
@@ -226,19 +225,6 @@
 					break;
 			}
 		});
-
-		// Animate button after all letters
-		const lastLetterDelay = allLetters.length * 0.04;
-		entranceTl.to(
-			ctaButton,
-			{
-				opacity: 1,
-				y: 0,
-				duration: 0.6,
-				ease: 'power3.out'
-			},
-			lastLetterDelay - 0.3
-		);
 
 		// Bird animation starts after title letters finish
 		const titleEndTime = titleLetters.length * 0.04 + 0.8;
@@ -310,6 +296,43 @@
 				{ rotateZ: 20, duration: 0.1, repeat: 9, yoyo: true, ease: 'power1.inOut' },
 				'<'
 			);
+
+		// Bird 3 carries the CTA button (comes from bottom)
+		const ctaRect = ctaButton.getBoundingClientRect();
+		const bird3OffscreenY = window.innerHeight - ctaRect.top + 150;
+
+		// Initial state - button starts off-screen (bird moves with it as child)
+		gsap.set(ctaButton, { y: bird3OffscreenY, opacity: 1 });
+
+		// Bird 3 animation - button flies up, bird is carried along as child element
+		const bird3StartTime = 1.0;
+		birdTl
+			.to(ctaButton, { y: 0, duration: 1.4, ease: 'power2.out' }, bird3StartTime)
+			.to(
+				bird3.querySelector('.wing'),
+				{ rotateZ: -20, duration: 0.1, repeat: 13, yoyo: true, ease: 'power1.inOut' },
+				'<'
+			)
+			// Bird flies away to right bottom
+			.to(
+				bird3,
+				{
+					x: window.innerWidth,
+					y: 200,
+					opacity: 0,
+					duration: 0.8,
+					ease: 'power2.in'
+				},
+				bird3StartTime + 1.4
+			)
+			.to(
+				bird3.querySelector('.wing'),
+				{ rotateZ: -20, duration: 0.1, repeat: 7, yoyo: true, ease: 'power1.inOut' },
+				'<'
+			)
+			// Button bounce happens simultaneously
+			.to(ctaButton, { y: 5, duration: 0.15, ease: 'power2.out' }, bird3StartTime + 1.4)
+			.to(ctaButton, { y: 0, duration: 0.3, ease: 'bounce.out' });
 
 		// Cloud animations
 		const cloudElements = cloudContainer.querySelectorAll('.cloud-item');
@@ -589,9 +612,30 @@
 			Build, Innovate, and Connect with the Ethereum Community in Indonesia.
 		</p>
 
-		<!-- CTA Button -->
-		<div bind:this={ctaButton}>
-			<Button href="#start" size="lg" class="mt-10">Start Your Ethereum Journey</Button>
+		<!-- CTA Button with Bird -->
+		<div bind:this={ctaButton} class="relative mt-10">
+			<!-- Bird 3 carrying the button -->
+			<svg
+				bind:this={bird3}
+				class="absolute -top-12 left-1/2 h-12 w-12 -translate-x-1/2"
+				viewBox="0 0 40 40"
+				fill="none"
+			>
+				<!-- Bird body -->
+				<ellipse cx="20" cy="22" rx="12" ry="8" fill="#5a5d79" />
+				<!-- Bird head -->
+				<circle cx="30" cy="18" r="6" fill="#5a5d79" />
+				<!-- Bird eye -->
+				<circle cx="32" cy="17" r="1.5" fill="white" />
+				<circle cx="32.5" cy="16.5" r="0.8" fill="#131740" />
+				<!-- Bird beak -->
+				<path d="M36 18 L42 17 L36 20 Z" fill="#f2b42d" />
+				<!-- Bird wing -->
+				<ellipse class="wing origin-left" cx="18" cy="20" rx="10" ry="5" fill="#3a3d59" />
+				<!-- Bird tail -->
+				<path d="M8 22 L2 18 L2 26 Z" fill="#3a3d59" />
+			</svg>
+			<Button href="#start" size="lg">Start Your Ethereum Journey</Button>
 		</div>
 	</div>
 </section>
