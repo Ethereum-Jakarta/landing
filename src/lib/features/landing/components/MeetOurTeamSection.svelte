@@ -186,6 +186,9 @@
 	onMount(() => {
 		gsap.registerPlugin(ScrollTrigger);
 
+		// Wait for other ScrollTriggers to initialize first
+		ScrollTrigger.refresh();
+
 		// Position cards in a circle
 		cardEls.forEach((card, i) => {
 			const angle = (i / totalCards) * Math.PI * 2;
@@ -214,6 +217,7 @@
 			pin: pinContainerEl,
 			pinSpacing: true,
 			scrub: 1,
+			invalidateOnRefresh: true,
 			onUpdate: (self) => {
 				const rotation = self.progress * 360;
 				gsap.set(carouselEl, { rotateY: rotation });
@@ -269,6 +273,11 @@
 				toggleActions: 'play none none reverse'
 			}
 		});
+
+		// Refresh after all triggers are set up to ensure proper ordering
+		setTimeout(() => {
+			ScrollTrigger.refresh();
+		}, 100);
 
 		return () => {
 			ScrollTrigger.getAll().forEach((t) => t.kill());

@@ -239,7 +239,8 @@
 				pin: true,
 				pinSpacing: true,
 				scrub: 0.6,
-				anticipatePin: 1
+				anticipatePin: 1,
+				invalidateOnRefresh: true
 			}
 		});
 
