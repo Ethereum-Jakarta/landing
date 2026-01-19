@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
-	type ButtonSize = 'sm' | 'md' | 'lg';
+	type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost';
+	type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 	interface Props {
 		variant?: ButtonVariant;
@@ -28,13 +28,15 @@
 	const variantClasses: Record<ButtonVariant, string> = {
 		primary: 'bg-primary text-primary-foreground',
 		secondary: 'bg-secondary text-secondary-foreground',
-		tertiary: 'bg-tertiary text-tertiary-foreground'
+		tertiary: 'bg-tertiary text-tertiary-foreground',
+		ghost: 'bg-transparent text-current'
 	};
 
 	const sizeClasses: Record<ButtonSize, string> = {
 		sm: 'px-4 py-2 text-sm',
 		md: 'px-6 py-3 text-base',
-		lg: 'px-8 py-4 text-lg'
+		lg: 'px-8 py-4 text-lg',
+		icon: 'p-2'
 	};
 </script>
 

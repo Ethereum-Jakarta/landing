@@ -440,7 +440,7 @@
 
 <section
 	bind:this={heroSection}
-	class="relative min-h-screen overflow-hidden bg-linear-to-b from-secondary to-background"
+	class="relative min-h-screen w-full overflow-hidden bg-linear-to-b from-secondary to-background"
 >
 	<!-- Header -->
 	<header class="relative z-10 flex items-center justify-between px-8 py-6 lg:px-16">
@@ -475,7 +475,7 @@
 
 	<!-- Cloud decorations - GPU accelerated with will-change -->
 	<div bind:this={cloudContainer} class="pointer-events-none absolute inset-0 overflow-hidden">
-		{#each cloudConfigs as config}
+		{#each cloudConfigs as config (config)}
 			<div
 				class="cloud-item absolute will-change-transform"
 				style="

@@ -1,1 +1,1 @@
-<div class="h-screen"></div>
+<div class="h-screen bg-background"></div>
