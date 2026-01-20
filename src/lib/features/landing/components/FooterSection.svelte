@@ -7,16 +7,16 @@
 </script>
 
 <footer
-	class="relative flex min-h-80 flex-col justify-between overflow-hidden bg-very-tertiary px-10 py-10 text-tertiary-foreground lg:min-h-96 lg:px-16 lg:py-12"
+	class="relative flex min-h-72 flex-col justify-between overflow-hidden bg-very-tertiary px-5 py-8 text-tertiary-foreground sm:px-10 sm:py-10 lg:min-h-96 lg:px-16 lg:py-12"
 >
 	<!-- Top section -->
-	<div class="flex flex-col gap-6">
-		<Logo useAlt class="-translate-x-7" />
-		<p class="max-w-md font-inter text-base leading-relaxed text-tertiary-foreground/90">
+	<div class="flex flex-col gap-4 sm:gap-6">
+		<Logo useAlt class="-translate-x-4 sm:-translate-x-7" />
+		<p class="max-w-md font-inter text-sm leading-relaxed text-tertiary-foreground/90 sm:text-base">
 			Build, innovate, and connect with the<br />Ethereum community in Indonesia.
 		</p>
 		<!-- Social icons -->
-		<div class="flex items-center gap-4">
+		<div class="flex items-center gap-4 max-sm:[&_svg]:size-4 mb-4">
 			<a
 				href="https://discord.gg/ethjkt"
 				class="text-tertiary-foreground transition-opacity hover:opacity-70"
@@ -39,10 +39,10 @@
 	</div>
 
 	<!-- Bottom section -->
-	<p class="font-inter text-sm text-tertiary-foreground/70">
+	<p class="font-inter text-xs text-tertiary-foreground/70 sm:text-sm">
 		© {new Date().getFullYear()} ETHJKT. All rights reserved
 	</p>
 
 	<!-- Character illustration -->
-	<Dawaey class="absolute right-10 bottom-0 lg:right-20" />
+	<Dawaey class="absolute right-5 bottom-0 hidden sm:block md:right-10 lg:right-20" />
 </footer>
