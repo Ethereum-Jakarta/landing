@@ -23,28 +23,100 @@
 			name: 'Rusty',
 			role: 'Community Manager',
 			image: '/team/rusty.png'
+		},
+		{
+			name: 'Member 5',
+			role: 'Role Title',
+			image: '/team/revo.png'
+		},
+		{
+			name: 'Member 6',
+			role: 'Role Title',
+			image: '/team/faisal.png'
+		},
+		{
+			name: 'Member 7',
+			role: 'Role Title',
+			image: '/team/wildan.png'
+		},
+		{
+			name: 'Member 8',
+			role: 'Role Title',
+			image: '/team/rusty.png'
+		},
+		{
+			name: 'Member 9',
+			role: 'Role Title',
+			image: '/team/revo.png'
+		},
+		{
+			name: 'Member 10',
+			role: 'Role Title',
+			image: '/team/faisal.png'
 		}
 	];
 
+	const desktopPositions = [
+		{ x: -520, y: -180, rotate: -18 },
+		{ x: 480, y: -220, rotate: 22 },
+		{ x: -280, y: -320, rotate: 12 },
+		{ x: 320, y: -280, rotate: -8 },
+		{ x: -450, y: 120, rotate: 15 },
+		{ x: 550, y: 80, rotate: -25 },
+		{ x: -180, y: 280, rotate: -12 },
+		{ x: 220, y: 320, rotate: 20 },
+		{ x: -5, y: -320, rotate: -15 },
+		{ x: 420, y: 200, rotate: 16 }
+	];
+
+	const mobilePositions = [
+		{ x: -120, y: -140, rotate: -12 },
+		{ x: 120, y: -145, rotate: 10 },
+		{ x: -90, y: -180, rotate: 8 },
+		{ x: 90, y: -175, rotate: -6 },
+		{ x: -130, y: 130, rotate: 10 },
+		{ x: 130, y: 125, rotate: -8 },
+		{ x: -80, y: 165, rotate: -5 },
+		{ x: 80, y: 170, rotate: 7 },
+		{ x: 0, y: -195, rotate: -3 },
+		{ x: 0, y: 190, rotate: 4 }
+	];
+
+	function getScaledPositions(): { x: number; y: number; rotate: number }[] {
+		if (typeof window === 'undefined') return desktopPositions;
+		const width = window.innerWidth;
+
+		if (width < 768) {
+			return mobilePositions;
+		}
+
+		let scale = 1;
+		if (width < 1024) scale = 0.55;
+		else if (width < 1440) scale = 0.75;
+
+		return desktopPositions.map((pos) => ({
+			x: pos.x * scale,
+			y: pos.y * scale,
+			rotate: pos.rotate
+		}));
+	}
+
 	let sectionEl: HTMLElement;
 	let pinContainerEl: HTMLDivElement;
-	let carouselEl: HTMLDivElement;
+	let textContainerEl: HTMLDivElement;
+	let headingEl: HTMLHeadingElement;
+	let subtitleEl: HTMLParagraphElement;
 	let cardEls: HTMLDivElement[] = [];
 	let frontFaces: HTMLDivElement[] = [];
-	let billboardWrappers: HTMLDivElement[] = [];
 	let cardInners: HTMLDivElement[] = [];
 	let textContents: HTMLDivElement[] = [];
 	let shineOverlays: HTMLDivElement[] = [];
+	let floatTweens: gsap.core.Tween[] = [];
 
-	const radius = 350;
-	const totalCards = teamMembers.length;
-
-	// Tilt settings - matching React spring feel
 	const rotateAmplitude = 14;
 	const scaleOnHover = 1.1;
-	const textDepth = 50; // translateZ for text in pixels
+	const textDepth = 50;
 
-	// Store current rotation values for smooth interpolation
 	let currentRotations: { x: number; y: number }[] = teamMembers.map(() => ({ x: 0, y: 0 }));
 	let targetRotations: { x: number; y: number }[] = teamMembers.map(() => ({ x: 0, y: 0 }));
 	let animationFrames: number[] = [];
@@ -62,7 +134,6 @@
 			y: (offsetX / (rect.width / 2)) * rotateAmplitude
 		};
 
-		// Update shine position
 		if (shineOverlays[index]) {
 			const shineX = ((e.clientX - rect.left) / rect.width) * 100;
 			const shineY = ((e.clientY - rect.top) / rect.height) * 100;
@@ -77,7 +148,6 @@
 		const shine = shineOverlays[index];
 		if (!card) return;
 
-		// Start spring animation loop
 		startSpringAnimation(index);
 
 		gsap.to(card, {
@@ -87,7 +157,6 @@
 			overwrite: 'auto'
 		});
 
-		// Animate text forward in Z
 		if (textContent) {
 			gsap.to(textContent, {
 				z: textDepth,
@@ -96,7 +165,6 @@
 			});
 		}
 
-		// Show shine
 		if (shine) {
 			gsap.to(shine, {
 				opacity: 1,
@@ -111,7 +179,6 @@
 		const shine = shineOverlays[index];
 		if (!card) return;
 
-		// Stop spring animation
 		if (animationFrames[index]) {
 			cancelAnimationFrame(animationFrames[index]);
 		}
@@ -127,7 +194,6 @@
 			overwrite: 'auto'
 		});
 
-		// Reset text Z
 		if (textContent) {
 			gsap.to(textContent, {
 				z: 0,
@@ -136,7 +202,6 @@
 			});
 		}
 
-		// Hide shine
 		if (shine) {
 			gsap.to(shine, {
 				opacity: 0,
@@ -151,7 +216,6 @@
 		const card = cardInners[index];
 		if (!card) return;
 
-		// Spring physics constants (similar to React spring)
 		const stiffness = 0.08;
 		const damping = 0.85;
 
@@ -162,7 +226,6 @@
 			const target = targetRotations[index];
 			const current = currentRotations[index];
 
-			// Spring physics
 			const forceX = (target.x - current.x) * stiffness;
 			const forceY = (target.y - current.y) * stiffness;
 
@@ -186,215 +249,207 @@
 	onMount(() => {
 		gsap.registerPlugin(ScrollTrigger);
 
-		// Wait for other ScrollTriggers to initialize first
+		let scatteredPositions = getScaledPositions();
+
 		ScrollTrigger.refresh();
 
-		// Position cards in a circle
-		cardEls.forEach((card, i) => {
-			const angle = (i / totalCards) * Math.PI * 2;
-			const x = Math.sin(angle) * radius;
-			const z = Math.cos(angle) * radius;
-			const rotateY = (i / totalCards) * 360;
+		gsap.set(headingEl, {
+			opacity: 0,
+			y: 60,
+			scale: 0.9
+		});
+
+		gsap.set(subtitleEl, {
+			opacity: 0,
+			y: 40
+		});
+
+		const tcaScrollTimeline = gsap.timeline({
+			scrollTrigger: {
+				trigger: pinContainerEl,
+				start: '50% 50%',
+				end: '1000% 50%',
+				scrub: true,
+				pin: true,
+				markers: false,
+				invalidateOnRefresh: true
+			}
+		});
+
+		tcaScrollTimeline.to(
+			headingEl,
+			{
+				opacity: 1,
+				y: 0,
+				scale: 1,
+				duration: 0.5,
+				ease: 'power2.out'
+			},
+			0
+		);
+
+		tcaScrollTimeline.to(
+			subtitleEl,
+			{
+				opacity: 1,
+				y: 0,
+				duration: 0.4,
+				ease: 'power2.out'
+			},
+			0.15
+		);
+
+		cardEls.forEach((card, index) => {
+			const finalPos = scatteredPositions[index];
 
 			gsap.set(card, {
-				x: x,
-				z: z,
-				rotateY: -rotateY,
-				transformOrigin: 'center center'
+				opacity: 1,
+				visibility: 'visible',
+				x: finalPos.x,
+				y: finalPos.y,
+				rotate: finalPos.rotate
 			});
-		});
 
-		// Initial face visibility update
-		updateFaceVisibility(0);
+			const isFirstInPair = index % 2 === 0;
+			const pairIndex = Math.floor(index / 2);
 
-		// Create pinned scroll animation
-		const scrollDistance = window.innerHeight * 2;
-
-		ScrollTrigger.create({
-			trigger: sectionEl,
-			start: 'top top',
-			end: `+=${scrollDistance}`,
-			pin: pinContainerEl,
-			pinSpacing: true,
-			scrub: 1,
-			invalidateOnRefresh: true,
-			onUpdate: (self) => {
-				const rotation = self.progress * 360;
-				gsap.set(carouselEl, { rotateY: rotation });
-				updateFaceVisibility(rotation);
-			}
-		});
-
-		function updateFaceVisibility(rotation: number) {
-			cardEls.forEach((card, i) => {
-				const cardAngle = (i / totalCards) * Math.PI * 2 + (rotation * Math.PI) / 180;
-				const zPos = Math.cos(cardAngle);
-
-				// Scale based on z position
-				const scale = gsap.utils.mapRange(-1, 1, 0.6, 1.1, zPos);
-
-				// Opacity based on z position
-				const cardOpacity = gsap.utils.mapRange(-1, 1, 0.4, 1, zPos);
-
-				// Shadow intensity
-				const shadowBlur = gsap.utils.mapRange(-1, 1, 5, 30, zPos);
-				const shadowOpacity = gsap.utils.mapRange(-1, 1, 0.1, 0.4, zPos);
-
-				gsap.set(card, {
-					scale: scale,
-					opacity: cardOpacity,
-					boxShadow: `0 ${shadowBlur / 2}px ${shadowBlur}px rgba(0, 0, 0, ${shadowOpacity})`
-				});
-
-				// Counter-rotate to always face the camera (billboard effect)
-				// Card's base rotateY is -(i/totalCards)*360, carousel adds rotation
-				// To face camera, counter with: baseAngle - rotation
-				const baseAngle = (i / totalCards) * 360;
-				const counterRotation = baseAngle - rotation;
-
-				if (billboardWrappers[i]) {
-					gsap.set(billboardWrappers[i], {
-						rotateY: counterRotation
-					});
-				}
+			floatTweens[index] = gsap.to(cardInners[index], {
+				y: 12,
+				duration: 3,
+				yoyo: true,
+				repeat: -1,
+				ease: 'sine.inOut',
+				paused: true
 			});
-		}
 
-		// Entrance animation
-		gsap.from(cardEls, {
-			opacity: 0,
-			scale: 0.5,
-			stagger: 0.1,
-			duration: 0.8,
-			ease: 'back.out(1.7)',
-			scrollTrigger: {
-				trigger: sectionEl,
-				start: 'top 80%',
-				toggleActions: 'play none none reverse'
-			}
+			tcaScrollTimeline.from(
+				card,
+				{
+					y: '120vh',
+					rotate: index % 2 === 0 ? '40deg' : '-40deg',
+					ease: 'power4.out',
+					duration: 1,
+					onComplete: () => {
+						floatTweens[index]?.play();
+					},
+					onReverseComplete: () => {
+						floatTweens[index]?.pause();
+						gsap.set(cardInners[index], { y: 0 });
+					}
+				},
+				isFirstInPair ? `pair${pairIndex}` : `pair${pairIndex}+=0`
+			);
 		});
 
-		// Refresh after all triggers are set up to ensure proper ordering
+		const handleResize = () => {
+			window.location.reload();
+		};
+
+		window.addEventListener('resize', handleResize);
+
 		setTimeout(() => {
 			ScrollTrigger.refresh();
 		}, 100);
 
 		return () => {
+			window.removeEventListener('resize', handleResize);
 			ScrollTrigger.getAll().forEach((t) => t.kill());
 			animationFrames.forEach((frame) => cancelAnimationFrame(frame));
+			floatTweens.forEach((tween) => tween && tween.kill());
 		};
 	});
 </script>
 
-<section bind:this={sectionEl} class="relative overflow-hidden bg-background">
-	<!-- Pin container - this gets pinned -->
-	<div bind:this={pinContainerEl} class="flex min-h-screen flex-col items-center justify-center">
-		<!-- Section Header -->
-		<div class="mb-12 text-center">
-			<h2 class="font-montserrat text-4xl font-bold text-tertiary md:text-5xl">Meet Our Team</h2>
-			<p class="mt-4 font-inter text-lg text-muted">Say hi to the team making ETHJKT happen.</p>
-		</div>
-
-		<!-- 3D Carousel Container -->
+<section bind:this={sectionEl} class="relative overflow-hidden bg-background px-4">
+	<div
+		bind:this={pinContainerEl}
+		class="tca-scroll-card-wrapper flex min-h-screen items-center justify-center"
+	>
 		<div
-			class="relative flex h-[450px] w-full items-center justify-center"
-			style="perspective: 1200px;"
+			class="relative mx-auto flex h-[400px] w-full items-center justify-center sm:h-[500px] md:h-[600px] lg:h-[800px]"
 		>
 			<div
-				bind:this={carouselEl}
-				class="relative h-[350px] w-[280px]"
-				style="transform-style: preserve-3d;"
+				bind:this={textContainerEl}
+				class="pointer-events-none absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center"
 			>
-				{#each teamMembers as member, i (member.name)}
+				<h2
+					bind:this={headingEl}
+					class="font-montserrat text-2xl font-bold text-tertiary md:text-4xl lg:text-6xl"
+				>
+					Meet Our Team
+				</h2>
+				<p
+					bind:this={subtitleEl}
+					class="mt-2 font-inter text-sm text-muted md:mt-4 md:text-base lg:text-lg"
+				>
+					Say hi to the team making ETHJKT happen.
+				</p>
+			</div>
+			{#each teamMembers as member, i (member.name)}
+				<div
+					bind:this={cardEls[i]}
+					class="tca-scroll-card absolute top-1/2 left-1/2 h-[150px] w-[112px] -translate-x-1/2 -translate-y-1/2 sm:h-[170px] sm:w-[128px] md:h-[220px] md:w-[165px] lg:h-[320px] lg:w-[240px]"
+				>
 					<div
-						bind:this={cardEls[i]}
-						class="absolute top-0 left-0 h-[350px] w-[280px]"
-						style="transform-style: preserve-3d;"
+						class="relative h-full w-full cursor-pointer"
+						role="button"
+						tabindex="0"
+						onmousemove={(e) => handleMouseMove(e, i)}
+						onmouseenter={() => handleMouseEnter(i)}
+						onmouseleave={() => handleMouseLeave(i)}
 					>
-						<!-- Hover trigger wrapper - stays static -->
 						<div
-							class="relative h-full w-full cursor-pointer"
-							role="button"
-							tabindex="0"
-							onmousemove={(e) => handleMouseMove(e, i)}
-							onmouseenter={() => handleMouseEnter(i)}
-							onmouseleave={() => handleMouseLeave(i)}
+							bind:this={cardInners[i]}
+							class="h-full w-full"
+							style="transform-style: preserve-3d;"
 						>
-							<!-- Billboard wrapper - counter-rotates to face camera -->
 							<div
-								bind:this={billboardWrappers[i]}
-								class="pointer-events-none h-full w-full"
-								style="transform-style: preserve-3d;"
+								bind:this={frontFaces[i]}
+								class="absolute inset-0 overflow-hidden rounded-2xl bg-white shadow-xl"
 							>
-								<!-- Card Inner - gets tilt/scale animated -->
-								<div
-									bind:this={cardInners[i]}
-									class="h-full w-full"
-									style="transform-style: preserve-3d;"
-								>
-									<!-- Front Face -->
+								<div class="relative h-full w-full overflow-hidden">
+									<img src={member.image} alt={member.name} class="h-full w-full object-cover" />
 									<div
-										bind:this={frontFaces[i]}
-										class="absolute inset-0 overflow-hidden rounded-2xl bg-white shadow-xl"
+										bind:this={shineOverlays[i]}
+										class="pointer-events-none absolute inset-0 opacity-0"
+									></div>
+									<div
+										class="absolute inset-x-0 bottom-0 h-14 bg-linear-to-t from-black/80 via-black/40 to-transparent sm:h-16 md:h-20 lg:h-28"
+									></div>
+									<div
+										bind:this={textContents[i]}
+										class="absolute bottom-2 left-2 text-white md:bottom-3 md:left-3 lg:bottom-4 lg:left-4"
+										style="transform-style: preserve-3d; transform: translateZ(0px);"
 									>
-										<div class="relative h-full w-full overflow-hidden">
-											<img
-												src={member.image}
-												alt={member.name}
-												class="h-full w-full object-cover"
-											/>
-											<!-- Dynamic shine effect overlay -->
-											<div
-												bind:this={shineOverlays[i]}
-												class="pointer-events-none absolute inset-0 opacity-0"
-											></div>
-											<!-- Gradient overlay for text -->
-											<div
-												class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-black/80 via-black/40 to-transparent"
-											></div>
-											<!-- Name and role - with 3D depth -->
-											<div
-												bind:this={textContents[i]}
-												class="absolute bottom-6 left-6 text-white"
-												style="transform-style: preserve-3d; transform: translateZ(0px);"
-											>
-												<h3 class="font-montserrat text-2xl font-bold drop-shadow-lg">
-													{member.name}
-												</h3>
-												<p class="font-inter text-base opacity-90 drop-shadow-md">{member.role}</p>
-											</div>
-										</div>
+										<h3
+											class="font-montserrat text-xs font-bold drop-shadow-lg md:text-base lg:text-xl"
+										>
+											{member.name}
+										</h3>
+										<p
+											class="font-inter text-[10px] opacity-90 drop-shadow-md md:text-xs lg:text-sm"
+										>
+											{member.role}
+										</p>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				{/each}
-			</div>
-		</div>
-
-		<!-- Scroll indicator -->
-		<div class="mt-8 flex flex-col items-center gap-2">
-			<p class="font-inter text-sm text-muted">Scroll to explore</p>
-			<div class="h-8 w-5 rounded-full border-2 border-muted/50 p-1">
-				<div class="scroll-indicator h-2 w-full rounded-full bg-muted/50"></div>
-			</div>
+				</div>
+			{/each}
 		</div>
 	</div>
 </section>
 
 <style>
-	.scroll-indicator {
-		animation: scrollBounce 1.5s ease-in-out infinite;
+	.tca-scroll-card,
+	.tca-scroll-card-wrapper {
+		transition: none !important;
 	}
 
-	@keyframes scrollBounce {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(12px);
-		}
+	.tca-scroll-card {
+		opacity: 0;
+		visibility: hidden;
 	}
 </style>

@@ -88,8 +88,8 @@
 			scrollTrigger: {
 				trigger: aboutSection,
 				start: 'top 85%',
-				end: 'top 40%',
-				scrub: 1.5,
+				end: 'top 0%',
+				scrub: 4,
 				toggleActions: 'play reverse play reverse'
 			}
 		});
@@ -132,7 +132,7 @@
 				trigger: aboutSection,
 				start: 'top 60%',
 				end: 'bottom top',
-				scrub: 2
+				scrub: 5
 			},
 			y: -50,
 			rotateX: 5,
@@ -145,7 +145,7 @@
 				trigger: aboutSection,
 				start: 'top 60%',
 				end: 'bottom top',
-				scrub: 2
+				scrub: 5
 			},
 			y: -25,
 			opacity: 0.7,
@@ -154,7 +154,7 @@
 		});
 
 		const cardCount = cardElements.length;
-		const scrollPerCard = 500;
+		const scrollPerCard = 1200;
 		const peekHeight = window.innerWidth >= 1024 ? 82 : 60;
 
 		gsap.set(imageContainer, {
@@ -179,8 +179,8 @@
 			scrollTrigger: {
 				trigger: pinnedContent,
 				start: 'top 80%',
-				end: 'top 35%',
-				scrub: 2,
+				end: 'top 20%',
+				scrub: 3,
 				toggleActions: 'play reverse play reverse'
 			},
 			x: 0,
@@ -196,8 +196,8 @@
 			scrollTrigger: {
 				trigger: pinnedContent,
 				start: 'top 80%',
-				end: 'top 35%',
-				scrub: 2,
+				end: 'top 20%',
+				scrub: 3,
 				toggleActions: 'play reverse play reverse'
 			},
 			x: 0,
@@ -238,7 +238,7 @@
 				end: `+=${(cardCount - 1) * scrollPerCard}`,
 				pin: true,
 				pinSpacing: true,
-				scrub: 0.6,
+				scrub: 2,
 				anticipatePin: 1,
 				invalidateOnRefresh: true
 			}
