@@ -121,13 +121,16 @@
 	let targetRotations: { x: number; y: number }[] = teamMembers.map(() => ({ x: 0, y: 0 }));
 	let animationFrames: number[] = [];
 
-	function handleMouseMove(e: MouseEvent, index: number) {
+	function handleMouseMove(e: MouseEvent | TouchEvent, index: number) {
 		const card = cardInners[index];
 		if (!card) return;
 
 		const rect = card.getBoundingClientRect();
-		const offsetX = e.clientX - rect.left - rect.width / 2;
-		const offsetY = e.clientY - rect.top - rect.height / 2;
+		const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+		const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+		const offsetX = clientX - rect.left - rect.width / 2;
+		const offsetY = clientY - rect.top - rect.height / 2;
 
 		targetRotations[index] = {
 			x: (offsetY / (rect.height / 2)) * -rotateAmplitude,
@@ -135,8 +138,8 @@
 		};
 
 		if (shineOverlays[index]) {
-			const shineX = ((e.clientX - rect.left) / rect.width) * 100;
-			const shineY = ((e.clientY - rect.top) / rect.height) * 100;
+			const shineX = ((clientX - rect.left) / rect.width) * 100;
+			const shineY = ((clientY - rect.top) / rect.height) * 100;
 			shineOverlays[index].style.background =
 				`radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.3) 0%, transparent 60%)`;
 		}
@@ -268,8 +271,8 @@
 			scrollTrigger: {
 				trigger: pinContainerEl,
 				start: '50% 50%',
-				end: '1000% 50%',
-				scrub: true,
+				end: '400% 50%',
+				scrub: 0.5,
 				pin: true,
 				markers: false,
 				invalidateOnRefresh: true
@@ -342,7 +345,16 @@
 		});
 
 		const handleResize = () => {
-			window.location.reload();
+			scatteredPositions = getScaledPositions();
+			cardEls.forEach((card, index) => {
+				const finalPos = scatteredPositions[index];
+				gsap.set(card, {
+					x: finalPos.x,
+					y: finalPos.y,
+					rotate: finalPos.rotate
+				});
+			});
+			ScrollTrigger.refresh();
 		};
 
 		window.addEventListener('resize', handleResize);
@@ -391,12 +403,15 @@
 					class="tca-scroll-card absolute top-1/2 left-1/2 h-[150px] w-[112px] -translate-x-1/2 -translate-y-1/2 sm:h-[170px] sm:w-[128px] md:h-[220px] md:w-[165px] lg:h-[320px] lg:w-[240px]"
 				>
 					<div
-						class="relative h-full w-full cursor-pointer"
+						class="relative h-full w-full cursor-pointer touch-manipulation"
 						role="button"
 						tabindex="0"
 						onmousemove={(e) => handleMouseMove(e, i)}
 						onmouseenter={() => handleMouseEnter(i)}
 						onmouseleave={() => handleMouseLeave(i)}
+						ontouchmove={(e) => handleMouseMove(e, i)}
+						ontouchstart={() => handleMouseEnter(i)}
+						ontouchend={() => handleMouseLeave(i)}
 					>
 						<div
 							bind:this={cardInners[i]}
@@ -451,5 +466,10 @@
 	.tca-scroll-card {
 		opacity: 0;
 		visibility: hidden;
+	}
+
+	.touch-manipulation {
+		touch-action: manipulation;
+		-webkit-tap-highlight-color: transparent;
 	}
 </style>

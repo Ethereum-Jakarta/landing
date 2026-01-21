@@ -32,33 +32,36 @@
 
 		<!-- Buttons -->
 		<div
-			class="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4 max-sm:flex-row"
+			class="flex w-full max-w-md flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4"
 		>
 			<Button
 				href="https://discord.gg/ethjkt"
 				size="sm"
-				class="gap-2 sm:gap-3 md:px-6 md:py-3 md:text-base"
+				class="gap-2 px-4 py-3 sm:gap-3 md:px-6 md:py-3 md:text-base"
 			>
-				<DiscordIcon class="h-5 w-5 sm:h-6 sm:w-6" />
-				<span class="max-sm:hidden"><span>Join the<br />Community</span></span>
+				<DiscordIcon class="h-6 w-6" />
+				<span class="sm:hidden">Join Discord</span>
+				<span class="hidden sm:inline"><span>Join the<br />Community</span></span>
 			</Button>
 
 			<Button
 				href="https://instagram.com/ethjkt"
 				size="sm"
-				class="gap-2 sm:gap-3 md:px-6 md:py-3 md:text-base"
+				class="gap-2 px-4 py-3 sm:gap-3 md:px-6 md:py-3 md:text-base"
 			>
-				<InstagramIcon class="h-5 w-5 sm:h-6 sm:w-6" />
-				<span class="max-sm:hidden"><span>Follow On<br />Instagram</span></span>
+				<InstagramIcon class="h-6 w-6" />
+				<span class="sm:hidden">Follow Instagram</span>
+				<span class="hidden sm:inline"><span>Follow On<br />Instagram</span></span>
 			</Button>
 
 			<Button
 				href="https://x.com/ethjkt"
 				size="sm"
-				class="gap-2 sm:gap-3 md:px-6 md:py-3 md:text-base"
+				class="gap-2 px-4 py-3 sm:gap-3 md:px-6 md:py-3 md:text-base"
 			>
-				<XTwitterIcon class="h-5 w-5 sm:h-6 sm:w-6" />
-				<span class="max-sm:hidden"><span>Hang Out on X</span></span>
+				<XTwitterIcon class="h-6 w-6" />
+				<span class="sm:hidden">Follow on X</span>
+				<span class="hidden sm:inline"><span>Hang Out on X</span></span>
 			</Button>
 		</div>
 	</div>
