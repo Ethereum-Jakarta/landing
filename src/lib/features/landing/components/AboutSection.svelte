@@ -407,7 +407,7 @@
 		>
 			<div
 				bind:this={imageContainer}
-				class="image-container relative mx-auto hidden lg:mx-0 lg:block lg:w-[45%] lg:max-w-[628px] lg:shrink"
+				class="image-container relative mx-auto w-full max-w-[400px] sm:max-w-[500px] lg:mx-0 lg:w-[45%] lg:max-w-[628px] lg:shrink"
 			>
 				{#each cards as card, index (card.title)}
 					<img
@@ -421,7 +421,7 @@
 
 			<div
 				bind:this={cardsContainer}
-				class="cards-container relative w-full lg:w-[45%] lg:max-w-[638px] lg:shrink"
+				class="cards-container relative w-full max-w-[400px] sm:max-w-[500px] lg:w-[45%] lg:max-w-[638px] lg:shrink"
 			>
 				<div
 					bind:this={cardsWrapper}

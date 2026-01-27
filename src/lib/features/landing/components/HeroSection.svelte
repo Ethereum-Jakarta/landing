@@ -369,72 +369,80 @@
 			});
 		});
 
-		// Paper airplane
-		const trailPoints: { x: number; y: number }[] = [];
-		const maxPoints = 80;
-		let airplaneX = window.innerWidth + 100;
-		let airplaneY = -100;
-		let mouseX = airplaneX;
-		let mouseY = airplaneY;
-		let currentRotation = 0;
+		// Paper airplane (disabled on mobile for better performance)
+		const isMobile = window.innerWidth < 768;
 
-		for (let i = 0; i < maxPoints; i++) {
-			trailPoints.push({ x: airplaneX, y: airplaneY });
+		if (!isMobile) {
+			const trailPoints: { x: number; y: number }[] = [];
+			const maxPoints = 80;
+			let airplaneX = window.innerWidth + 100;
+			let airplaneY = -100;
+			let mouseX = airplaneX;
+			let mouseY = airplaneY;
+			let currentRotation = 0;
+
+			for (let i = 0; i < maxPoints; i++) {
+				trailPoints.push({ x: airplaneX, y: airplaneY });
+			}
+
+			function createSmoothPath(points: { x: number; y: number }[]): string {
+				if (points.length < 4) return '';
+				let path = `M ${points[0].x} ${points[0].y}`;
+				for (let i = 0; i < points.length - 3; i += 3) {
+					const p0 = points[Math.max(0, i - 1)];
+					const p1 = points[i];
+					const p2 = points[Math.min(points.length - 1, i + 3)];
+					const p3 = points[Math.min(points.length - 1, i + 6)];
+					const cp1x = p1.x + (p2.x - p0.x) / 6;
+					const cp1y = p1.y + (p2.y - p0.y) / 6;
+					const cp2x = p2.x - (p3.x - p1.x) / 6;
+					const cp2y = p2.y - (p3.y - p1.y) / 6;
+					path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+				}
+				return path;
+			}
+
+			function animate() {
+				const ease = 0.06;
+				airplaneX += (mouseX - airplaneX) * ease;
+				airplaneY += (mouseY - airplaneY) * ease;
+
+				const dx = mouseX - airplaneX;
+				const dy = mouseY - airplaneY;
+				if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+					const targetRotation = Math.atan2(dy, dx) * (180 / Math.PI);
+					currentRotation += (targetRotation - currentRotation) * 0.08;
+				}
+
+				if (paperAirplane) {
+					paperAirplane.style.left = `${airplaneX - 24}px`;
+					paperAirplane.style.top = `${airplaneY - 24}px`;
+					paperAirplane.style.transform = `rotate(${currentRotation}deg)`;
+				}
+
+				trailPoints.unshift({ x: airplaneX, y: airplaneY });
+				if (trailPoints.length > maxPoints) trailPoints.pop();
+
+				if (trailPath && trailPoints.length > 4) {
+					trailPath.setAttribute('d', createSmoothPath(trailPoints));
+				}
+
+				requestAnimationFrame(animate);
+			}
+
+			animate();
+
+			const onMouseMove = (e: MouseEvent) => {
+				mouseX = e.clientX;
+				mouseY = e.clientY;
+			};
+
+			window.addEventListener('mousemove', onMouseMove, { passive: true });
+		} else {
+			// Hide paper airplane on mobile
+			if (paperAirplane) paperAirplane.style.display = 'none';
+			if (trailPath) trailPath.style.display = 'none';
 		}
-
-		function createSmoothPath(points: { x: number; y: number }[]): string {
-			if (points.length < 4) return '';
-			let path = `M ${points[0].x} ${points[0].y}`;
-			for (let i = 0; i < points.length - 3; i += 3) {
-				const p0 = points[Math.max(0, i - 1)];
-				const p1 = points[i];
-				const p2 = points[Math.min(points.length - 1, i + 3)];
-				const p3 = points[Math.min(points.length - 1, i + 6)];
-				const cp1x = p1.x + (p2.x - p0.x) / 6;
-				const cp1y = p1.y + (p2.y - p0.y) / 6;
-				const cp2x = p2.x - (p3.x - p1.x) / 6;
-				const cp2y = p2.y - (p3.y - p1.y) / 6;
-				path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
-			}
-			return path;
-		}
-
-		function animate() {
-			const ease = 0.06;
-			airplaneX += (mouseX - airplaneX) * ease;
-			airplaneY += (mouseY - airplaneY) * ease;
-
-			const dx = mouseX - airplaneX;
-			const dy = mouseY - airplaneY;
-			if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-				const targetRotation = Math.atan2(dy, dx) * (180 / Math.PI);
-				currentRotation += (targetRotation - currentRotation) * 0.08;
-			}
-
-			if (paperAirplane) {
-				paperAirplane.style.left = `${airplaneX - 24}px`;
-				paperAirplane.style.top = `${airplaneY - 24}px`;
-				paperAirplane.style.transform = `rotate(${currentRotation}deg)`;
-			}
-
-			trailPoints.unshift({ x: airplaneX, y: airplaneY });
-			if (trailPoints.length > maxPoints) trailPoints.pop();
-
-			if (trailPath && trailPoints.length > 4) {
-				trailPath.setAttribute('d', createSmoothPath(trailPoints));
-			}
-
-			requestAnimationFrame(animate);
-		}
-
-		animate();
-
-		const onMouseMove = (e: MouseEvent) => {
-			mouseX = e.clientX;
-			mouseY = e.clientY;
-		};
-
-		window.addEventListener('mousemove', onMouseMove, { passive: true });
 	}
 </script>
 
@@ -600,7 +608,7 @@
 					>of</span
 				>
 			</span>
-			<span class="font-light"><span bind:this={web3Text}>WEB3 at</span></span>
+			<span class="font-light"><span bind:this={web3Text}>Ethereum at</span></span>
 			<span bind:this={ethjktText} class="font-black tracking-wide">ETHJKT</span>
 		</h1>
 

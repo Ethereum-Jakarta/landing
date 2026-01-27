@@ -61,8 +61,8 @@
 		ScrollTrigger.create({
 			trigger: stickySection,
 			start: 'top top',
-			end: () => `+=${window.innerHeight * 4}`,
-			scrub: 1,
+			end: () => `+=${window.innerHeight * 2}`,
+			scrub: 0.5,
 			pin: true,
 			pinSpacing: true,
 			onUpdate: (self) => {
@@ -328,10 +328,22 @@
 		position: relative;
 		flex: 1;
 		height: 100%;
-		min-width: 380px;
+		min-width: 280px;
 		max-width: 550px;
 		transform-style: preserve-3d;
 		transform-origin: top;
+	}
+
+	@media (min-width: 480px) {
+		.roadmap-card {
+			min-width: 340px;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.roadmap-card {
+			min-width: 380px;
+		}
 	}
 
 	#card-1 {
@@ -438,20 +450,25 @@
 	@media (max-width: 768px) {
 		.sticky-section {
 			height: auto;
-			padding: 4rem 2rem;
+			min-height: 100vh;
+			padding: 2rem 1rem;
 		}
 
 		.card-container {
 			flex-direction: column;
 			width: 100%;
-			max-width: 400px;
-			gap: 2rem !important;
+			max-width: min(400px, 90vw);
+			gap: 2rem;
 			transform: none;
+			height: auto;
 		}
 
 		.roadmap-card {
 			width: 100%;
-			border-radius: 20px !important;
+			min-width: unset;
+			height: auto;
+			min-height: 450px;
+			border-radius: 20px;
 		}
 
 		.card-title {
