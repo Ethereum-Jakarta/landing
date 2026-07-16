@@ -448,7 +448,7 @@
 
 <section
 	bind:this={heroSection}
-	class="relative min-h-screen w-full overflow-hidden bg-linear-to-b from-secondary to-background"
+	class="relative flex min-h-screen w-full flex-col overflow-hidden bg-linear-to-b from-secondary to-background"
 >
 	<!-- Header -->
 	<header class="relative z-10 flex items-center justify-between px-8 py-6 lg:px-16">
@@ -538,7 +538,7 @@
 
 	<!-- Hero Content -->
 	<div
-		class="relative z-10 flex flex-col items-center justify-center px-4 pt-16 text-center lg:pt-24"
+		class="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-16 text-center"
 	>
 		<!-- Main Heading Line 1 -->
 		<h1
