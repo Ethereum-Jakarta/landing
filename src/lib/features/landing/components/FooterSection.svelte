@@ -4,6 +4,7 @@
 	import InstagramIcon from '$lib/components/icons/InstagramIcon.svelte';
 	import XTwitterIcon from '$lib/components/icons/XTwitterIcon.svelte';
 	import Dawaey from '../assets/Dawaey.svelte';
+	import { SOCIAL_LINKS } from '$lib/constants';
 </script>
 
 <footer
@@ -18,19 +19,19 @@
 		<!-- Social icons -->
 		<div class="flex items-center gap-4 max-sm:[&_svg]:size-4 mb-4">
 			<a
-				href="https://discord.gg/ethjkt"
+				href={SOCIAL_LINKS.discord}
 				class="text-tertiary-foreground transition-opacity hover:opacity-70"
 			>
 				<DiscordIcon />
 			</a>
 			<a
-				href="https://instagram.com/ethjkt"
+				href={SOCIAL_LINKS.instagram}
 				class="text-tertiary-foreground transition-opacity hover:opacity-70"
 			>
 				<InstagramIcon />
 			</a>
 			<a
-				href="https://x.com/ethjkt"
+				href={SOCIAL_LINKS.x}
 				class="text-tertiary-foreground transition-opacity hover:opacity-70"
 			>
 				<XTwitterIcon />

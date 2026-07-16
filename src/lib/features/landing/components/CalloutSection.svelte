@@ -10,6 +10,7 @@
 	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
 	import InstagramIcon from '$lib/components/icons/InstagramIcon.svelte';
 	import XTwitterIcon from '$lib/components/icons/XTwitterIcon.svelte';
+	import { SOCIAL_LINKS } from '$lib/constants';
 </script>
 
 <section
@@ -35,7 +36,7 @@
 			class="flex w-full max-w-md flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4"
 		>
 			<Button
-				href="https://discord.gg/ethjkt"
+				href={SOCIAL_LINKS.discord}
 				size="sm"
 				class="gap-2 px-4 py-3 sm:gap-3 md:px-6 md:py-3 md:text-base"
 			>
@@ -45,7 +46,7 @@
 			</Button>
 
 			<Button
-				href="https://instagram.com/ethjkt"
+				href={SOCIAL_LINKS.instagram}
 				size="sm"
 				class="gap-2 px-4 py-3 sm:gap-3 md:px-6 md:py-3 md:text-base"
 			>
@@ -55,7 +56,7 @@
 			</Button>
 
 			<Button
-				href="https://x.com/ethjkt"
+				href={SOCIAL_LINKS.x}
 				size="sm"
 				class="gap-2 px-4 py-3 sm:gap-3 md:px-6 md:py-3 md:text-base"
 			>

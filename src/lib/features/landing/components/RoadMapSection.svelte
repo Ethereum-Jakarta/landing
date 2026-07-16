@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { gsap } from 'gsap';
 	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import brandIcon from '$lib/assets/logo-ethjkt-1.png';
 
 	let stickySection: HTMLElement;
 	let stickyHeader: HTMLDivElement;
@@ -218,7 +219,10 @@
 	<div class="sticky-content">
 		<div bind:this={cardContainer} class="card-container">
 			<div bind:this={card1} class="roadmap-card" id="card-1">
-				<div class="card-front"></div>
+				<div class="card-front">
+					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
+					<h3 class="card-front-title">{roadmapCards[0].title}</h3>
+				</div>
 				<div class="card-back">
 					<div class="card-back-content">
 						<div class="card-image-container" style="background-color: {roadmapCards[0].bgColor};">
@@ -231,7 +235,10 @@
 			</div>
 
 			<div bind:this={card2} class="roadmap-card" id="card-2">
-				<div class="card-front"></div>
+				<div class="card-front">
+					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
+					<h3 class="card-front-title">{roadmapCards[1].title}</h3>
+				</div>
 				<div class="card-back">
 					<div class="card-back-content">
 						<div class="card-image-container" style="background-color: {roadmapCards[1].bgColor};">
@@ -244,7 +251,10 @@
 			</div>
 
 			<div bind:this={card3} class="roadmap-card" id="card-3">
-				<div class="card-front"></div>
+				<div class="card-front">
+					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
+					<h3 class="card-front-title">{roadmapCards[2].title}</h3>
+				</div>
 				<div class="card-back">
 					<div class="card-back-content">
 						<div class="card-image-container" style="background-color: {roadmapCards[2].bgColor};">
@@ -257,7 +267,10 @@
 			</div>
 
 			<div bind:this={card4} class="roadmap-card" id="card-4">
-				<div class="card-front"></div>
+				<div class="card-front">
+					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
+					<h3 class="card-front-title">{roadmapCards[3].title}</h3>
+				</div>
 				<div class="card-back">
 					<div class="card-back-content">
 						<div class="card-image-container" style="background-color: {roadmapCards[3].bgColor};">
@@ -370,10 +383,33 @@
 	}
 
 	.card-front {
-		background: #1a1a1a;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		gap: 0.5rem;
+		padding: 1.5rem;
+		text-align: center;
+		background-color: var(--color-background);
+		background-image: radial-gradient(
+			color-mix(in srgb, var(--color-foreground) 8%, transparent) 2px,
+			transparent 2px
+		);
+		background-size: 22px 22px;
+		border: 1px solid color-mix(in srgb, var(--color-foreground) 8%, transparent);
+	}
+
+	.card-brand-icon {
+		width: clamp(4rem, 12vw, 8rem);
+		height: auto;
+	}
+
+	.card-front-title {
+		font-family: 'Montserrat', sans-serif;
+		font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+		font-weight: 700;
+		margin: 0;
+		color: var(--color-foreground);
 	}
 
 	.card-back {

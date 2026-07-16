@@ -1,5 +1,5 @@
 <script lang="ts">
-	import faqImage from '../assets/faq.png';
+	import FaqArt from '../assets/FaqArt.svelte';
 	import EthArt from '../assets/EthArt.svelte';
 	import Accordion from '$lib/components/molecules/Accordion.svelte';
 
@@ -37,7 +37,9 @@
 	];
 </script>
 
-<section class="relative overflow-hidden bg-background py-16 md:py-24">
+<section
+	class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-background py-16 md:py-24"
+>
 	<!-- Decorative Ethereum art -->
 	<div class="pointer-events-none absolute inset-0">
 		<EthArt class="absolute top-1/2 -left-16 h-auto w-32 -translate-y-1/2 md:-left-10 md:w-40" />
@@ -60,9 +62,9 @@
 				<Accordion items={faqs} />
 			</div>
 
-			<!-- Image -->
+			<!-- Animated artwork -->
 			<div class="order-1 flex justify-center lg:order-2">
-				<img src={faqImage} alt="FAQ Illustration" class="max-w-sm md:max-w-md" />
+				<FaqArt class="h-auto w-full max-w-sm md:max-w-md" />
 			</div>
 		</div>
 	</div>
