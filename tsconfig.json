@@ -11,7 +11,20 @@
 		"sourceMap": true,
 		"strict": true,
 		"moduleResolution": "bundler"
-	}
+	},
+	// bun test files import the `bun:test` runtime module, which svelte-check (tsc) can't resolve.
+	// They run under `bun test`, not svelte-check, so exclude them from the type-check pass.
+	// (Re-lists the generated service-worker excludes since a child `exclude` overrides the parent's.)
+	"exclude": [
+		"node_modules/**",
+		"src/service-worker.js",
+		"src/service-worker/**/*.js",
+		"src/service-worker.ts",
+		"src/service-worker/**/*.ts",
+		"src/service-worker.d.ts",
+		"src/service-worker/**/*.d.ts",
+		"src/**/*.test.ts"
+	]
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
 	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files
 	//

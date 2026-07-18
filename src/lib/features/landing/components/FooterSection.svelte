@@ -17,7 +17,7 @@
 			Build, innovate, and connect with the<br />Ethereum community in Indonesia.
 		</p>
 		<!-- Social icons -->
-		<div class="flex items-center gap-4 max-sm:[&_svg]:size-4 mb-4">
+		<div class="mb-4 flex items-center gap-4 max-sm:[&_svg]:size-4">
 			<a
 				href={SOCIAL_LINKS.discord}
 				class="text-tertiary-foreground transition-opacity hover:opacity-70"
@@ -30,10 +30,7 @@
 			>
 				<InstagramIcon />
 			</a>
-			<a
-				href={SOCIAL_LINKS.x}
-				class="text-tertiary-foreground transition-opacity hover:opacity-70"
-			>
+			<a href={SOCIAL_LINKS.x} class="text-tertiary-foreground transition-opacity hover:opacity-70">
 				<XTwitterIcon />
 			</a>
 		</div>

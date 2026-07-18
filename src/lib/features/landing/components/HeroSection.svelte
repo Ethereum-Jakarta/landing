@@ -643,7 +643,7 @@
 				<!-- Bird tail -->
 				<path d="M8 22 L2 18 L2 26 Z" fill="#3a3d59" />
 			</svg>
-			<Button href="#start" size="lg">Start Your Ethereum Journey</Button>
+			<Button href="/login" size="lg">Start Your Ethereum Journey</Button>
 		</div>
 	</div>
 </section>
