@@ -13,8 +13,13 @@ export const POST: RequestHandler = async ({ cookies, locals }) => {
 	const pending = session.data.igPending as { username: string; nonce: string } | undefined;
 	if (!pending) error(400, 'no pending instagram challenge; request one first');
 
-	const { ok } = await fetchBioContainsNonce(pending.username, pending.nonce);
-	if (!ok) error(400, 'nonce not found in bio');
+	const { status } = await fetchBioContainsNonce(pending.username, pending.nonce);
+	if (status === 'unavailable') {
+		error(503, "couldn't reach Instagram right now — wait a moment and try again");
+	}
+	if (status === 'not_found') {
+		error(400, "nonce not found in your bio — make sure it's saved and your profile is public");
+	}
 
 	const result = await linkAccount({
 		userId: locals.user.id,

@@ -5,9 +5,10 @@
 	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
 	import XTwitterIcon from '$lib/components/icons/XTwitterIcon.svelte';
 	import InstagramIcon from '$lib/components/icons/InstagramIcon.svelte';
+	import GitHubIcon from '$lib/components/icons/GitHubIcon.svelte';
 	import type { Component } from 'svelte';
 
-	type Provider = 'discord' | 'x' | 'luma' | 'instagram';
+	type Provider = 'discord' | 'x' | 'luma' | 'instagram' | 'github';
 
 	let { data } = $props();
 
@@ -35,7 +36,8 @@
 
 	const oauth: { provider: Provider; label: string; href: string; Icon: Component }[] = [
 		{ provider: 'discord', label: 'Discord', href: '/auth/discord', Icon: DiscordIcon },
-		{ provider: 'x', label: 'X', href: '/auth/x', Icon: XTwitterIcon }
+		{ provider: 'x', label: 'X', href: '/auth/x', Icon: XTwitterIcon },
+		{ provider: 'github', label: 'GitHub', href: '/auth/github', Icon: GitHubIcon }
 	];
 
 	// Inline (bio-nonce) providers: luma, instagram

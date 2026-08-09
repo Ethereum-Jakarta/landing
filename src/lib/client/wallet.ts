@@ -1,7 +1,7 @@
 import { createAppKit, type AppKit } from '@reown/appkit';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { mainnet, sepolia, baseSepolia } from '@reown/appkit/networks';
-import { getAccount, signMessage, type Config } from '@wagmi/core';
+import { getAccount, signMessage, watchAccount, type Config } from '@wagmi/core';
 import { createSiweMessage } from 'viem/siwe';
 import { env } from '$env/dynamic/public';
 
@@ -35,23 +35,44 @@ export function openWallet() {
 	return ensureInit().modal.open();
 }
 
-/** SIWE sign-in: connect if needed, sign a server-issued nonce, verify server-side. */
+/** Resolve once a wallet is connected, opening the modal if needed. Rejects if the user backs out. */
+function waitForAddress(config: Config, timeoutMs = 180_000): Promise<`0x${string}`> {
+	const existing = getAccount(config).address;
+	if (existing) return Promise.resolve(existing);
+	return new Promise((resolve, reject) => {
+		const timer = setTimeout(() => {
+			unwatch();
+			reject(new Error('wallet not connected'));
+		}, timeoutMs);
+		const unwatch = watchAccount(config, {
+			onChange(account) {
+				if (account.address) {
+					clearTimeout(timer);
+					unwatch();
+					resolve(account.address);
+				}
+			}
+		});
+	});
+}
+
+/** One-shot SIWE: connect the wallet (opening the modal if needed), then sign + verify server-side. */
 export async function signIn(): Promise<{ id: string; walletAddress: string }> {
 	const { modal, wagmiConfig } = ensureInit();
-	const account = getAccount(wagmiConfig);
-	if (!account.address) {
+	let address = getAccount(wagmiConfig).address;
+	if (!address) {
 		await modal.open();
-		throw new Error('connect a wallet, then sign in again');
+		address = await waitForAddress(wagmiConfig);
 	}
 
 	const { nonce } = await fetch('/api/auth/nonce').then((r) => r.json());
 	const message = createSiweMessage({
 		domain: location.host,
-		address: account.address,
+		address,
 		statement: 'Sign in to the ethjkt member hub.',
 		uri: location.origin,
 		version: '1',
-		chainId: account.chainId ?? 1,
+		chainId: getAccount(wagmiConfig).chainId ?? 1,
 		nonce
 	});
 	const signature = await signMessage(wagmiConfig, { message });

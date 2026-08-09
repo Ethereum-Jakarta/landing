@@ -10,7 +10,7 @@ export const users = pgTable('users', {
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
 });
 
-export type Provider = 'discord' | 'x' | 'luma' | 'instagram';
+export type Provider = 'discord' | 'x' | 'luma' | 'instagram' | 'github';
 
 /** A verified social link for a user. One row per (provider, provider_account_id). */
 export const linkedAccounts = pgTable(

@@ -41,7 +41,10 @@ export type MemberRoles = {
  * Returns null when the bot isn't configured (caller falls back to the connect-time snapshot).
  * Reflects current roles on each call — refresh the page to see adds/removes.
  */
-export async function getMemberRolesLive(userId: string, now = Date.now()): Promise<MemberRoles | null> {
+export async function getMemberRolesLive(
+	userId: string,
+	now = Date.now()
+): Promise<MemberRoles | null> {
 	if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_GUILD_ID) return null;
 	const memRes = await botFetch(`/guilds/${env.DISCORD_GUILD_ID}/members/${userId}`);
 	if (memRes.status === 404) return { isMember: false, roles: [] };
