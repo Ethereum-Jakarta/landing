@@ -3,84 +3,53 @@
 	import { gsap } from 'gsap';
 	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+	// Inner ring first (7), then outer ring (12) — see the ring config below.
 	const teamMembers = [
-		{
-			name: 'Revo',
-			role: 'Community Lead',
-			image: '/team/revo.png'
-		},
-		{
-			name: 'Faisal',
-			role: 'Developer Relations',
-			image: '/team/faisal.png'
-		},
-		{
-			name: 'Wildan',
-			role: 'Developer Advocate',
-			image: '/team/wildan.png'
-		},
-		{
-			name: 'Rusty',
-			role: 'Community Manager',
-			image: '/team/rusty.png'
-		},
-		{
-			name: 'Member 5',
-			role: 'Role Title',
-			image: '/team/revo.png'
-		},
-		{
-			name: 'Member 6',
-			role: 'Role Title',
-			image: '/team/faisal.png'
-		},
-		{
-			name: 'Member 7',
-			role: 'Role Title',
-			image: '/team/wildan.png'
-		},
-		{
-			name: 'Member 8',
-			role: 'Role Title',
-			image: '/team/rusty.png'
-		},
-		{
-			name: 'Member 9',
-			role: 'Role Title',
-			image: '/team/revo.png'
-		},
-		{
-			name: 'Member 10',
-			role: 'Role Title',
-			image: '/team/faisal.png'
-		}
+		{ name: 'Revo', role: 'Developer Ecosystem Lead', image: '/team/revo.webp' },
+		{ name: 'Rustacle', role: 'Growth & Ecosystem Lead', image: '/team/rustacle.webp' },
+		{ name: 'Zexoverz', role: 'Protocol Research Lead', image: '/team/zexoverz.webp' },
+		{ name: 'Meli', role: 'Lead Marketing', image: '/team/meli.webp' },
+		{ name: 'Wildan', role: 'Co-Lead Developer', image: '/team/wildan.webp' },
+		{ name: 'Nabil', role: 'Co-Lead Business Operation', image: '/team/nabil.webp' },
+		{ name: 'Catherine', role: 'Co-Lead Marketing', image: '/team/catherine.webp' },
+		{ name: 'Bima Jadiva', role: 'Developer Advocate', image: '/team/bima.webp' },
+		{ name: 'Adz', role: 'Developer', image: '/team/adz.webp' },
+		{ name: 'Andrew', role: 'Developer', image: '/team/andrew-dev.webp' },
+		{ name: 'Fulvian', role: 'Developer', image: '/team/fulvian.webp' },
+		{ name: 'Louis', role: 'Developer', image: '/team/louis.webp' },
+		{ name: 'Riko', role: 'Developer', image: '/team/riko.webp' },
+		{ name: 'Riyan', role: 'Developer', image: '/team/riyan.webp' },
+		{ name: 'Maulana', role: 'Protocol Research', image: '/team/maulana.webp' },
+		{ name: 'Zidan', role: 'Protocol Research', image: '/team/zidan.webp' },
+		{ name: 'Andrew', role: 'Graphic Designer', image: '/team/andrew-designer.webp' },
+		{ name: 'Arya', role: 'Business Operation', image: '/team/arya.webp' },
+		{ name: 'Hansel', role: 'Business Operation', image: '/team/hansel.webp' }
 	];
 
-	const desktopPositions = [
-		{ x: -520, y: -180, rotate: -18 },
-		{ x: 480, y: -220, rotate: 22 },
-		{ x: -280, y: -320, rotate: 12 },
-		{ x: 320, y: -280, rotate: -8 },
-		{ x: -450, y: 120, rotate: 15 },
-		{ x: 550, y: 80, rotate: -25 },
-		{ x: -180, y: 280, rotate: -12 },
-		{ x: 220, y: 320, rotate: 20 },
-		{ x: -5, y: -320, rotate: -15 },
-		{ x: 420, y: 200, rotate: 16 }
-	];
+	// Scatter cards over concentric ellipses around the centered heading.
+	// Each ring is [count, radiusX, radiusY]; counts must sum to teamMembers.length.
+	function scatter(rings: [number, number, number][]) {
+		return rings.flatMap(([count, rx, ry], ring) =>
+			Array.from({ length: count }, (_, i) => {
+				const angle = (i / count) * Math.PI * 2 + (ring * Math.PI) / count;
+				return {
+					x: Math.round(Math.sin(angle) * rx),
+					y: Math.round(-Math.cos(angle) * ry),
+					rotate: Math.round(Math.sin(angle * 2 + ring) * 20)
+				};
+			})
+		);
+	}
 
-	const mobilePositions = [
-		{ x: -120, y: -140, rotate: -12 },
-		{ x: 120, y: -145, rotate: 10 },
-		{ x: -90, y: -180, rotate: 8 },
-		{ x: 90, y: -175, rotate: -6 },
-		{ x: -130, y: 130, rotate: 10 },
-		{ x: 130, y: 125, rotate: -8 },
-		{ x: -80, y: 165, rotate: -5 },
-		{ x: 80, y: 170, rotate: 7 },
-		{ x: 0, y: -195, rotate: -3 },
-		{ x: 0, y: 190, rotate: 4 }
-	];
+	const desktopPositions = scatter([
+		[7, 400, 210],
+		[12, 730, 340]
+	]);
+
+	const mobilePositions = scatter([
+		[7, 95, 145],
+		[12, 130, 290]
+	]);
 
 	function getScaledPositions(): { x: number; y: number; rotate: number }[] {
 		if (typeof window === 'undefined') return desktopPositions;
@@ -397,7 +366,7 @@
 					Say hi to the team making ETHJKT happen.
 				</p>
 			</div>
-			{#each teamMembers as member, i (member.name)}
+			{#each teamMembers as member, i (member.image)}
 				<div
 					bind:this={cardEls[i]}
 					class="tca-scroll-card absolute top-1/2 left-1/2 h-[150px] w-[112px] -translate-x-1/2 -translate-y-1/2 sm:h-[170px] sm:w-[128px] md:h-[220px] md:w-[165px] lg:h-[320px] lg:w-[240px]"
@@ -423,7 +392,12 @@
 								class="absolute inset-0 overflow-hidden rounded-2xl bg-white shadow-xl"
 							>
 								<div class="relative h-full w-full overflow-hidden">
-									<img src={member.image} alt={member.name} class="h-full w-full object-cover" />
+									<img
+										src={member.image}
+										alt={member.name}
+										loading="lazy"
+										class="h-full w-full object-cover"
+									/>
 									<div
 										bind:this={shineOverlays[i]}
 										class="pointer-events-none absolute inset-0 opacity-0"

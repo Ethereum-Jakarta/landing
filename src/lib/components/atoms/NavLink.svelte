@@ -13,9 +13,10 @@
 
 <a
 	{href}
-	class="font-inter text-tertiary transition-colors hover:text-primary {active
-		? 'text-primary'
-		: ''} {className}"
+	aria-current={active ? 'page' : undefined}
+	class="font-inter transition-colors hover:text-primary {active
+		? 'font-semibold text-primary'
+		: 'text-tertiary'} {className}"
 >
 	{@render children()}
 </a>

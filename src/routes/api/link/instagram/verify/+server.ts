@@ -14,6 +14,9 @@ export const POST: RequestHandler = async ({ cookies, locals }) => {
 	if (!pending) error(400, 'no pending instagram challenge; request one first');
 
 	const { status } = await fetchBioContainsNonce(pending.username, pending.nonce);
+	if (status === 'no_such_user') {
+		error(404, `Instagram has no public profile @${pending.username} — check the spelling`);
+	}
 	if (status === 'unavailable') {
 		error(503, "couldn't reach Instagram right now — wait a moment and try again");
 	}

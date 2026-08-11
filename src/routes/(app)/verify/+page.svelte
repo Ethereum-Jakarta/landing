@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
+	import { errorMessage } from '$lib/client/http';
 	import Button from '$lib/components/atoms/Button.svelte';
 	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
 	import XTwitterIcon from '$lib/components/icons/XTwitterIcon.svelte';
@@ -25,14 +26,6 @@
 		if (linkedQ) return { kind: 'ok' as const, text: `${linkedQ} linked` };
 		return null;
 	});
-
-	const short = (addr: string) => `${addr.slice(0, 6)}…${addr.slice(-4)}`;
-
-	async function doLogout() {
-		const { logout } = await import('$lib/client/wallet');
-		await logout();
-		goto('/login');
-	}
 
 	const oauth: { provider: Provider; label: string; href: string; Icon: Component }[] = [
 		{ provider: 'discord', label: 'Discord', href: '/auth/discord', Icon: DiscordIcon },
@@ -60,7 +53,7 @@
 			body: JSON.stringify({ username: s.username.trim() })
 		});
 		if (!res.ok) {
-			s.error = await res.text();
+			s.error = await errorMessage(res);
 			s.step = 'idle';
 			return;
 		}
@@ -79,7 +72,7 @@
 			body: JSON.stringify({ username: s.username.trim() })
 		});
 		if (!res.ok) {
-			s.error = await res.text();
+			s.error = await errorMessage(res);
 			s.step = 'challenge';
 			return;
 		}
@@ -93,15 +86,7 @@
 </script>
 
 <div class="mx-auto flex w-full max-w-xl flex-col gap-8 px-6 py-16">
-	<header class="flex flex-col gap-2">
-		<h1 class="font-montserrat text-3xl font-bold text-foreground">Identity Hub</h1>
-		<div class="flex items-center justify-between">
-			<span class="font-inter text-sm text-muted">{short(data.user.walletAddress)}</span>
-			<Button variant="ghost" size="sm" class="text-muted hover:text-foreground" onclick={doLogout}>
-				Log out
-			</Button>
-		</div>
-	</header>
+	<h1 class="font-montserrat text-3xl font-bold text-foreground">Identity Hub</h1>
 
 	{#if banner}
 		<div

@@ -1,17 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import EventCard from '$lib/features/events/components/EventCard.svelte';
-	import Logo from '$lib/components/atoms/Logo.svelte';
-	import NavTabs from '$lib/components/molecules/NavTabs.svelte';
+	import SiteHeader from '$lib/components/organism/SiteHeader.svelte';
 	import Button from '$lib/components/atoms/Button.svelte';
 
 	let { data }: { data: PageData } = $props();
-
-	const navItems = [
-		{ label: 'Home', href: '/' },
-		{ label: 'About Us', href: '/#about' },
-		{ label: 'Events', href: '/events' }
-	];
 </script>
 
 <svelte:head>
@@ -22,11 +15,7 @@
 <div class="min-h-screen bg-background">
 	<!-- Gradient header band, matching the hero -->
 	<section class="relative overflow-hidden bg-linear-to-b from-secondary to-background">
-		<header class="relative z-10 flex items-center justify-between px-8 py-6 lg:px-16">
-			<a href="/"><Logo height={32} /></a>
-			<NavTabs items={navItems} class="hidden md:block" />
-			<div class="w-8 md:w-0"></div>
-		</header>
+		<SiteHeader />
 
 		<div class="relative z-10 px-6 py-16 text-center md:py-24">
 			<h1 class="font-montserrat text-5xl font-bold text-tertiary md:text-6xl">Events</h1>

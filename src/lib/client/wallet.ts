@@ -1,3 +1,4 @@
+import { errorMessage } from '$lib/client/http';
 import { createAppKit, type AppKit } from '@reown/appkit';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { mainnet, sepolia, baseSepolia } from '@reown/appkit/networks';
@@ -82,7 +83,7 @@ export async function signIn(): Promise<{ id: string; walletAddress: string }> {
 		headers: { 'content-type': 'application/json' },
 		body: JSON.stringify({ message, signature })
 	});
-	if (!res.ok) throw new Error(await res.text());
+	if (!res.ok) throw new Error(await errorMessage(res, 'Sign in failed'));
 	const { user } = await res.json();
 	return user;
 }

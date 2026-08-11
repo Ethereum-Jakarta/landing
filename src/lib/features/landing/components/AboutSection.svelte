@@ -22,8 +22,7 @@
 		{
 			icon: AboutGlobal,
 			title: 'Global Exposures',
-			description:
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+			description: 'Showcase your skills to a global audience and be part of the Web3 movement.',
 			bgColor: 'bg-secondary',
 			textColor: 'text-tertiary',
 			image: AboutLeftImage
@@ -32,7 +31,7 @@
 			icon: AboutInnovation,
 			title: 'Innovation & Building',
 			description:
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+				'Join the hackathon to create decentralized applications and tackle real-world challenges with Ethereum.',
 			bgColor: 'bg-tertiary',
 			textColor: 'text-white',
 			image: AboutLeftImage
@@ -41,7 +40,7 @@
 			icon: AboutLearn,
 			title: 'Learn From Industry Experts',
 			description:
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+				'Attend talks and workshops by Ethereum and blockchain leaders to stay updated on Web3 developments.',
 			bgColor: 'bg-white',
 			textColor: 'text-tertiary',
 			image: AboutLeftImage
@@ -50,7 +49,7 @@
 			icon: AboutNetworking,
 			title: 'Networking Opportunities',
 			description:
-				'ETHJKT will gather the brightest minds in blockchain, offering you a chance to connect with developers, entrepreneurs, and Web3 enthusiasts.',
+				'Connect with top blockchain developers, entrepreneurs, and Web3 enthusiasts to grow your Ethereum network.',
 			bgColor: 'bg-primary',
 			textColor: 'text-tertiary',
 			image: AboutLeftImage
