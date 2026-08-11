@@ -28,27 +28,47 @@
 
 	// Scatter cards over concentric ellipses around the centered heading.
 	// Each ring is [count, radiusX, radiusY]; counts must sum to teamMembers.length.
+	// Radii are to the card *centre*, so each ring must clear the heading by half a card.
 	function scatter(rings: [number, number, number][]) {
-		return rings.flatMap(([count, rx, ry], ring) =>
-			Array.from({ length: count }, (_, i) => {
-				const angle = (i / count) * Math.PI * 2 + (ring * Math.PI) / count;
+		return rings.flatMap(([count, rx, ry], ring) => {
+			// Stepping by equal angle bunches cards at the ends of a wide ellipse — the
+			// wider the ellipse the worse it gets. Walk the perimeter by arc length instead.
+			const SAMPLES = 720;
+			const at = (t: number) => [Math.sin(t) * rx, -Math.cos(t) * ry];
+			const cum = [0];
+			for (let i = 1; i <= SAMPLES; i++) {
+				const [x0, y0] = at(((i - 1) / SAMPLES) * Math.PI * 2);
+				const [x1, y1] = at((i / SAMPLES) * Math.PI * 2);
+				cum.push(cum[i - 1] + Math.hypot(x1 - x0, y1 - y0));
+			}
+			const total = cum[SAMPLES];
+			return Array.from({ length: count }, (_, i) => {
+				// Offset alternate rings so cards don't line up radially.
+				const target = (((i + ring * 0.5) / count) * total) % total;
+				let k = cum.findIndex((c) => c >= target);
+				if (k < 0) k = SAMPLES;
+				const angle = (k / SAMPLES) * Math.PI * 2;
+				const [x, y] = at(angle);
 				return {
-					x: Math.round(Math.sin(angle) * rx),
-					y: Math.round(-Math.cos(angle) * ry),
-					rotate: Math.round(Math.sin(angle * 2 + ring) * 20)
+					x: Math.round(x),
+					y: Math.round(y),
+					rotate: Math.round(Math.sin(angle * 2 + ring) * 16)
 				};
-			})
-		);
+			});
+		});
 	}
 
+	// Sized so the outer ring stays inside a 1440x800 viewport (card is 200x266 at lg,
+	// so |x| <= 620 and |y| <= 267 keep every card fully on screen) and the inner ring
+	// clears the centred heading.
 	const desktopPositions = scatter([
-		[7, 400, 210],
-		[12, 730, 340]
+		[7, 400, 250],
+		[12, 620, 267]
 	]);
 
 	const mobilePositions = scatter([
-		[7, 95, 145],
-		[12, 130, 290]
+		[7, 100, 150],
+		[12, 132, 292]
 	]);
 
 	function getScaledPositions(): { x: number; y: number; rotate: number }[] {
@@ -351,7 +371,7 @@
 		>
 			<div
 				bind:this={textContainerEl}
-				class="pointer-events-none absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center"
+				class="pointer-events-none absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-background/70 px-6 py-4 text-center backdrop-blur-sm"
 			>
 				<h2
 					bind:this={headingEl}
@@ -369,7 +389,7 @@
 			{#each teamMembers as member, i (member.image)}
 				<div
 					bind:this={cardEls[i]}
-					class="tca-scroll-card absolute top-1/2 left-1/2 h-[150px] w-[112px] -translate-x-1/2 -translate-y-1/2 sm:h-[170px] sm:w-[128px] md:h-[220px] md:w-[165px] lg:h-[320px] lg:w-[240px]"
+					class="tca-scroll-card absolute top-1/2 left-1/2 h-[150px] w-[112px] -translate-x-1/2 -translate-y-1/2 sm:h-[170px] sm:w-[128px] md:h-[200px] md:w-[150px] lg:h-[266px] lg:w-[200px]"
 				>
 					<div
 						class="relative h-full w-full cursor-pointer touch-manipulation"

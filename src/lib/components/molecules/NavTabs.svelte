@@ -15,9 +15,20 @@
 	<ul class="flex items-center justify-center gap-6 overflow-x-auto whitespace-nowrap lg:gap-8">
 		{#each items as item (item.href)}
 			<li>
-				<NavLink href={item.href} active={isActive(item.href, page.url.pathname)}>
-					{item.label}
-				</NavLink>
+				{#if item.soon}
+					<span class="flex items-center gap-1.5 font-inter text-muted">
+						{item.label}
+						<span
+							class="rounded-full bg-muted/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase"
+						>
+							Soon
+						</span>
+					</span>
+				{:else}
+					<NavLink href={item.href} active={isActive(item.href, page.url.pathname)}>
+						{item.label}
+					</NavLink>
+				{/if}
 			</li>
 		{/each}
 	</ul>

@@ -4,7 +4,7 @@
 	import Logo from '$lib/components/atoms/Logo.svelte';
 	import NavTabs from '$lib/components/molecules/NavTabs.svelte';
 	import Button from '$lib/components/atoms/Button.svelte';
-	import { siteNav } from '$lib/nav';
+	import { siteNav, hubEnabled } from '$lib/nav';
 
 	let { class: className = '' }: { class?: string } = $props();
 
@@ -42,7 +42,19 @@
 	<Logo height={32} class="md:order-1" />
 
 	<div class="flex items-center gap-2 md:order-3">
-		{#if user}
+		{#if !hubEnabled}
+			<!-- Wallet login ships with the hub; show it as pending rather than a dead button. -->
+			<span
+				class="flex items-center gap-1.5 rounded-full border border-muted/25 px-4 py-2 font-inter text-sm text-muted"
+			>
+				Connect Wallet
+				<span
+					class="rounded-full bg-muted/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase"
+				>
+					Soon
+				</span>
+			</span>
+		{:else if user}
 			<span class="hidden font-inter text-sm text-muted sm:inline">
 				{short(user.walletAddress)}
 			</span>

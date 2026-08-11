@@ -7,10 +7,7 @@
 	let stickySection: HTMLElement;
 	let stickyHeader: HTMLDivElement;
 	let cardContainer: HTMLDivElement;
-	let card1: HTMLDivElement;
-	let card2: HTMLDivElement;
-	let card3: HTMLDivElement;
-	let card4: HTMLDivElement;
+	let cardEls: HTMLDivElement[] = [];
 
 	let isGapAnimationCompleted = false;
 	let isFlipAnimationCompleted = false;
@@ -20,8 +17,6 @@
 			number: '01',
 			title: 'Meetups',
 			bgColor: '#FFA6BF',
-			img: '/src/lib/features/landing/assets/roadmap/placeholder.svg',
-			alt: 'Meetups',
 			description:
 				'We regularly organise meetups that feature engaging discussions, presentations, and workshops on Ethereum and related topics, both in-person and online.'
 		},
@@ -29,8 +24,6 @@
 			number: '02',
 			title: 'Workshops',
 			bgColor: '#7977DD',
-			img: '/src/lib/features/landing/assets/roadmap/placeholder.svg',
-			alt: 'Workshops',
 			description:
 				'We offer workshops for Ethereum development, smart contracts, and DApps. Suitable for all skill levels.'
 		},
@@ -38,8 +31,6 @@
 			number: '03',
 			title: 'Study Groups',
 			bgColor: '#9FDDFF',
-			img: '/src/lib/features/landing/assets/roadmap/placeholder.svg',
-			alt: 'Study Groups',
 			description:
 				'We facilitate small study groups for individuals interested in Ethereum development, smart contracts, and decentralized applications (DApps).'
 		},
@@ -47,8 +38,6 @@
 			number: '04',
 			title: 'Hackathon',
 			bgColor: '#9CFFFD',
-			img: '/src/lib/features/landing/assets/roadmap/placeholder.svg',
-			alt: 'Hackathon',
 			description:
 				'We organize hackathons centered around Ethereum development, smart contracts, and decentralized applications (DApps) for builders.'
 		}
@@ -57,7 +46,16 @@
 	onMount(() => {
 		gsap.registerPlugin(ScrollTrigger);
 
-		const cards = [card1, card2, card3, card4];
+		// Below this the cards are stacked by CSS; pinning and flipping them there just
+		// fought the layout with inline transforms and left cards mid-rotation.
+		const desktop = window.matchMedia('(min-width: 1025px)');
+		if (!desktop.matches) {
+			const onChange = () => desktop.matches && window.location.reload();
+			desktop.addEventListener('change', onChange);
+			return () => desktop.removeEventListener('change', onChange);
+		}
+
+		const cards = cardEls;
 
 		ScrollTrigger.create({
 			trigger: stickySection,
@@ -113,19 +111,19 @@
 						ease: 'power3.out'
 					});
 
-					gsap.to(card1, {
+					gsap.to(cardEls[0], {
 						borderRadius: '24px 0 0 24px',
 						duration: 0.5,
 						ease: 'power3.out'
 					});
 
-					gsap.to([card2, card3], {
+					gsap.to([cardEls[1], cardEls[2]], {
 						borderRadius: '0px',
 						duration: 0.5,
 						ease: 'power3.out'
 					});
 
-					gsap.to(card4, {
+					gsap.to(cardEls[3], {
 						borderRadius: '0 24px 24px 0',
 						duration: 0.5,
 						ease: 'power3.out'
@@ -152,7 +150,7 @@
 					});
 
 					// Move card1 left and up, card4 slightly left and up for better balance
-					gsap.to(card1, {
+					gsap.to(cardEls[0], {
 						y: 30,
 						x: -40,
 						rotationZ: -8,
@@ -160,7 +158,7 @@
 						ease: 'power3.inOut'
 					});
 
-					gsap.to(card4, {
+					gsap.to(cardEls[3], {
 						y: 30,
 						x: -5,
 						rotationZ: 8,
@@ -187,7 +185,7 @@
 					});
 
 					// Reset card1 and card4 positions
-					gsap.to([card1, card4], {
+					gsap.to([cardEls[0], cardEls[3]], {
 						y: 0,
 						x: 0,
 						rotationZ: 0,
@@ -218,69 +216,23 @@
 
 	<div class="sticky-content">
 		<div bind:this={cardContainer} class="card-container">
-			<div bind:this={card1} class="roadmap-card" id="card-1">
-				<div class="card-front">
-					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
-					<h3 class="card-front-title">{roadmapCards[0].title}</h3>
-				</div>
-				<div class="card-back">
-					<div class="card-back-content">
-						<div class="card-image-container" style="background-color: {roadmapCards[0].bgColor};">
-							<img src={roadmapCards[0].img} alt={roadmapCards[0].alt} />
+			{#each roadmapCards as card, i (card.number)}
+				<div bind:this={cardEls[i]} class="roadmap-card" id="card-{i + 1}">
+					<div class="card-front">
+						<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
+						<h3 class="card-front-title">{card.title}</h3>
+					</div>
+					<div class="card-back">
+						<div class="card-back-content">
+							<div class="card-image-container" style="background-color: {card.bgColor};">
+								<span class="card-image-number">{card.number}</span>
+							</div>
+							<h3 class="card-title">{card.title}</h3>
+							<p class="card-description">{card.description}</p>
 						</div>
-						<h3 class="card-title">{roadmapCards[0].title}</h3>
-						<p class="card-description">{roadmapCards[0].description}</p>
 					</div>
 				</div>
-			</div>
-
-			<div bind:this={card2} class="roadmap-card" id="card-2">
-				<div class="card-front">
-					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
-					<h3 class="card-front-title">{roadmapCards[1].title}</h3>
-				</div>
-				<div class="card-back">
-					<div class="card-back-content">
-						<div class="card-image-container" style="background-color: {roadmapCards[1].bgColor};">
-							<img src={roadmapCards[1].img} alt={roadmapCards[1].alt} />
-						</div>
-						<h3 class="card-title">{roadmapCards[1].title}</h3>
-						<p class="card-description">{roadmapCards[1].description}</p>
-					</div>
-				</div>
-			</div>
-
-			<div bind:this={card3} class="roadmap-card" id="card-3">
-				<div class="card-front">
-					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
-					<h3 class="card-front-title">{roadmapCards[2].title}</h3>
-				</div>
-				<div class="card-back">
-					<div class="card-back-content">
-						<div class="card-image-container" style="background-color: {roadmapCards[2].bgColor};">
-							<img src={roadmapCards[2].img} alt={roadmapCards[2].alt} />
-						</div>
-						<h3 class="card-title">{roadmapCards[2].title}</h3>
-						<p class="card-description">{roadmapCards[2].description}</p>
-					</div>
-				</div>
-			</div>
-
-			<div bind:this={card4} class="roadmap-card" id="card-4">
-				<div class="card-front">
-					<img class="card-brand-icon" src={brandIcon} alt="ETHJKT" />
-					<h3 class="card-front-title">{roadmapCards[3].title}</h3>
-				</div>
-				<div class="card-back">
-					<div class="card-back-content">
-						<div class="card-image-container" style="background-color: {roadmapCards[3].bgColor};">
-							<img src={roadmapCards[3].img} alt={roadmapCards[3].alt} />
-						</div>
-						<h3 class="card-title">{roadmapCards[3].title}</h3>
-						<p class="card-description">{roadmapCards[3].description}</p>
-					</div>
-				</div>
-			</div>
+			{/each}
 		</div>
 	</div>
 </section>
@@ -339,24 +291,12 @@
 
 	.roadmap-card {
 		position: relative;
-		flex: 1;
+		flex: 1 1 0;
 		height: 100%;
-		min-width: 280px;
+		min-width: 0;
 		max-width: 550px;
 		transform-style: preserve-3d;
 		transform-origin: top;
-	}
-
-	@media (min-width: 480px) {
-		.roadmap-card {
-			min-width: 340px;
-		}
-	}
-
-	@media (min-width: 768px) {
-		.roadmap-card {
-			min-width: 380px;
-		}
 	}
 
 	#card-1 {
@@ -443,10 +383,12 @@
 		margin-bottom: 1.25rem;
 	}
 
-	.card-image-container img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+	.card-image-number {
+		font-family: 'Montserrat', sans-serif;
+		font-size: clamp(2.5rem, 6vw, 4.5rem);
+		font-weight: 700;
+		color: rgba(255, 255, 255, 0.85);
+		line-height: 1;
 	}
 
 	.card-title {
@@ -469,42 +411,66 @@
 		max-width: 90%;
 	}
 
+	/* Below 1025px four cards can't be read side by side, so stack them and skip the
+	   flip choreography entirely (onMount bails at the same breakpoint). */
 	@media (max-width: 1024px) {
-		.card-container {
-			width: 85%;
-		}
-
-		.card-title {
-			font-size: 1.5rem;
-		}
-
-		.card-description {
-			font-size: 1.05rem;
-		}
-	}
-
-	@media (max-width: 768px) {
 		.sticky-section {
+			/* The section is a centring flex row; once the header is in flow it must stack. */
+			flex-direction: column;
 			height: auto;
-			min-height: 100vh;
-			padding: 2rem 1rem;
+			min-height: 0;
+			padding: 3rem 1rem;
+			overflow: visible;
+		}
+
+		.sticky-header {
+			position: static;
+			transform: none;
+			opacity: 1;
+			margin-bottom: 2.5rem;
+		}
+
+		.sticky-content {
+			height: auto;
 		}
 
 		.card-container {
 			flex-direction: column;
 			width: 100%;
-			max-width: min(400px, 90vw);
-			gap: 2rem;
-			transform: none;
+			max-width: min(420px, 100%);
 			height: auto;
+			max-height: none;
+			gap: 1.5rem;
+			perspective: none;
 		}
 
 		.roadmap-card {
 			width: 100%;
-			min-width: unset;
+			max-width: none;
 			height: auto;
-			min-height: 450px;
 			border-radius: 20px;
+			transform: none !important;
+			transform-style: flat;
+		}
+
+		/* Show the informative face directly instead of the flip target. */
+		.card-front {
+			display: none;
+		}
+
+		.card-back {
+			position: relative;
+			height: auto;
+			transform: none;
+			backface-visibility: visible;
+			border-radius: 20px;
+			padding: 1.25rem;
+		}
+
+		.card-image-container {
+			width: 100%;
+			aspect-ratio: 1.8;
+			margin-bottom: 1rem;
 		}
 
 		.card-title {
@@ -513,6 +479,7 @@
 
 		.card-description {
 			font-size: 1rem;
+			max-width: 100%;
 		}
 	}
 </style>
