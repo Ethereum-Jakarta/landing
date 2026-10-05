@@ -80,12 +80,13 @@ async function fetchPeriod(
 
 // Upcoming events, plus recent past ones as a fallback (the calendar is often empty of future events).
 export async function getCalendarEvents(
-	fetchFn: typeof fetch
+	fetchFn: typeof fetch,
+	limit = 50
 ): Promise<{ upcoming: LumaEvent[]; past: LumaEvent[]; failed: boolean }> {
 	try {
 		const [upcoming, past] = await Promise.all([
-			fetchPeriod(fetchFn, 'future', 50),
-			fetchPeriod(fetchFn, 'past', 50)
+			fetchPeriod(fetchFn, 'future', limit),
+			fetchPeriod(fetchFn, 'past', limit)
 		]);
 		return { upcoming, past, failed: false };
 	} catch {

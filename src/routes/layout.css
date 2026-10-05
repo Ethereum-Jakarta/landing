@@ -1,6 +1,5 @@
-@import 'tailwindcss';
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap');
+@import 'tailwindcss';
 
 @theme {
 	--font-inter: 'Inter', sans-serif;
@@ -15,6 +14,39 @@
 	--color-secondary-foreground: #ffffff;
 	--color-tertiary: #131740;
 	--color-tertiary-foreground: #ffffff;
+
+	/* Landing v5 supporting tints */
+	--color-primary-hover: #f5c04d;
+	--color-ink-soft: #363a5d;
+	--color-ink-wing: #3a3d59;
+	--color-hill: #141e60;
+	--color-sky-mid: #9ed9f5;
+	--color-sky-soft: #ddf2fc;
+	--color-sky-pale: #c4e9f9;
+	--color-sky-wash: #e3f3fb;
+	--color-sky-halo: #e6f5fd;
+	--color-sky-haze: #f2fafe;
+	--color-sky-mist: #f4fafe;
+	--color-paper-shade: #f0f3f7;
+	--color-paper-line: #c9ccd8;
+	--color-footer-text: #e7e8ec;
+	--color-footer-muted: #b5b7c4;
+
+	--shadow-cta: 0 12px 28px rgb(242 180 45 / 0.38);
+	--shadow-pill: 0 12px 32px rgb(19 23 64 / 0.12), 0 0 0 1px rgb(19 23 64 / 0.06);
+	--shadow-none-pill: 0 0 0 0 rgb(19 23 64 / 0);
+	--shadow-soft: 0 16px 36px rgb(19 23 64 / 0.08);
+	--shadow-soft-ring: 0 0 0 1.5px rgb(19 23 64 / 0.1), 0 16px 36px rgb(19 23 64 / 0.08);
+	--shadow-tag: 0 4px 12px rgb(19 23 64 / 0.16);
+	--shadow-social: 0 12px 26px rgb(19 23 64 / 0.16);
+	--shadow-flip: 0 10px 40px rgb(19 23 64 / 0.14);
+	--shadow-photo:
+		0 0 0 4px #ffffff, 0 0 0 5px rgb(19 23 64 / 0.08), 0 18px 36px rgb(19 23 64 / 0.14);
+}
+
+::selection {
+	background: var(--color-primary);
+	color: var(--color-foreground);
 }
 
 ::-webkit-scrollbar {
