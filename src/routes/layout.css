@@ -40,6 +40,10 @@
 	--text-label--line-height: 1.2;
 	--text-label--letter-spacing: 0.08em;
 
+	/* Ambient CSS motion for non-GSAP pages; always pair with `motion-safe:`. */
+	--animate-drift: drift 18s ease-in-out infinite alternate;
+	--animate-float: float 4.5s ease-in-out infinite alternate;
+
 	/* Landing v5 supporting tints */
 	--color-primary-hover: #f5c04d;
 	--color-ink-soft: #363a5d;
@@ -67,6 +71,24 @@
 	--shadow-flip: 0 10px 40px rgb(19 23 64 / 0.14);
 	--shadow-photo:
 		0 0 0 4px #ffffff, 0 0 0 5px rgb(19 23 64 / 0.08), 0 18px 36px rgb(19 23 64 / 0.14);
+}
+
+@keyframes drift {
+	from {
+		translate: -24px 0;
+	}
+	to {
+		translate: 24px 0;
+	}
+}
+
+@keyframes float {
+	from {
+		translate: 0 0;
+	}
+	to {
+		translate: 0 -10px;
+	}
 }
 
 html {

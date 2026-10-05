@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { SOCIAL_LINKS } from '$lib/constants';
-	import heroSkyline from '../assets/hero/hero-skyline-haze.webp';
-	import Bird from './decor/Bird.svelte';
-	import BirdFlock from './decor/BirdFlock.svelte';
-	import Deco from './decor/Deco.svelte';
-	import SkyCloud from './decor/SkyCloud.svelte';
+	import heroSkyline from '$lib/assets/hero-skyline-haze.webp';
+	import Bird from '$lib/components/decor/Bird.svelte';
+	import BirdFlock from '$lib/components/decor/BirdFlock.svelte';
+	import Deco from '$lib/components/decor/Deco.svelte';
+	import SkyCloud from '$lib/components/decor/SkyCloud.svelte';
 
 	interface Props {
 		headWord?: 'WEB3' | 'Ethereum';

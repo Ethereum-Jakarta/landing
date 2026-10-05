@@ -1,9 +1,9 @@
 <script lang="ts">
-	import logoSrc from '$lib/assets/logo-ethjkt-1.png';
+	import logoSrc from '$lib/assets/logo-ethjkt-light.png';
 	import EthArt from '../assets/EthArt.svelte';
 	import { TEAM } from '../data';
-	import BirdFlock from './decor/BirdFlock.svelte';
-	import Deco from './decor/Deco.svelte';
+	import BirdFlock from '$lib/components/decor/BirdFlock.svelte';
+	import Deco from '$lib/components/decor/Deco.svelte';
 	import SectionHeading from './SectionHeading.svelte';
 
 	interface Props {

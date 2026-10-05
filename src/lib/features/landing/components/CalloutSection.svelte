@@ -6,9 +6,9 @@
 	import Run2 from '../assets/Run2.svelte';
 	import Run3 from '../assets/Run3.svelte';
 	import { SOCIALS } from '../data';
-	import BirdFlock from './decor/BirdFlock.svelte';
-	import Deco from './decor/Deco.svelte';
-	import SkyCloud from './decor/SkyCloud.svelte';
+	import BirdFlock from '$lib/components/decor/BirdFlock.svelte';
+	import Deco from '$lib/components/decor/Deco.svelte';
+	import SkyCloud from '$lib/components/decor/SkyCloud.svelte';
 </script>
 
 <section

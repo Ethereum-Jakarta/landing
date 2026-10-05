@@ -5,10 +5,10 @@
 	import type { CalendarEvents } from '$lib/features/events/luma';
 	import SiteHeader from '$lib/components/organism/SiteHeader.svelte';
 	import SiteFooter from '$lib/components/organism/SiteFooter.svelte';
-	import ethCrystal from './assets/shared/eth-crystal.webp';
+	import ethCrystal from '$lib/assets/eth-crystal.webp';
 	import { breakpointOf, SECTION_IDS } from './data';
 	import { initLandingMotion } from './motion';
-	import SpriteDefs from './components/SpriteDefs.svelte';
+	import SpriteDefs from '$lib/components/decor/SpriteDefs.svelte';
 	import PaperPlane from './components/PaperPlane.svelte';
 	import HeroSection from './components/HeroSection.svelte';
 	import AboutSection from './components/AboutSection.svelte';

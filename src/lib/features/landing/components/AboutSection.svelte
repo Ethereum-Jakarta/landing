@@ -2,7 +2,7 @@
 	import aboutBlob from '../assets/about/about_left.svg';
 	import aboutPeople from '../assets/about-community.webp';
 	import { PRINCIPLES } from '../data';
-	import Deco from './decor/Deco.svelte';
+	import Deco from '$lib/components/decor/Deco.svelte';
 
 	interface Props {
 		/** Desktop: sticky stage where scroll lights the four principle cards in turn. */

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { page } from '$app/state';
-	import logoSrc from '$lib/assets/logo-ethjkt-1.png';
+	import logoSrc from '$lib/assets/logo-ethjkt-light.png';
 
 	interface Props {
 		/** Section currently in view on the landing page (highlights its nav item). */
@@ -82,13 +82,21 @@
 >
 	<nav
 		aria-label="Primary"
-		class="pointer-events-auto flex w-full items-center justify-between gap-4 rounded-full transition-[max-width,padding,background-color,box-shadow] duration-[600ms,500ms,400ms,400ms] ease-[cubic-bezier(.2,.8,.2,1)] {scrolled ||
+		class="pointer-events-auto flex w-full items-center justify-between gap-4 rounded-full transition-[max-width,padding,background-color,box-shadow] duration-[600ms,500ms,400ms,400ms] ease-[cubic-bezier(.2,.8,.2,1)] md:grid md:grid-cols-[1fr_auto_1fr] {scrolled ||
 		menuOpen
-			? 'max-w-[980px] bg-background py-2 pr-2 pl-5 shadow-pill'
+			? 'max-w-[980px] bg-background p-2 shadow-pill'
 			: 'max-w-[1600px] bg-background/0 px-0 py-1 shadow-none-pill'}"
 	>
-		<a href="/" aria-label="ETHJKT home" data-a="logo" class="flex flex-none items-center">
-			<img src={logoSrc} alt="ETHJKT" class="block h-8 w-auto" />
+		<a
+			href="/"
+			aria-label="ETHJKT home"
+			data-a="logo"
+			class="flex flex-none items-center justify-self-start transition-[padding] duration-500 {scrolled ||
+			menuOpen
+				? 'pl-3'
+				: 'pl-0'}"
+		>
+			<img src={logoSrc} alt="ETHJKT" width="190" height="86" class="block h-10 w-auto" />
 		</a>
 		<ul
 			class="flex items-center gap-0.5 rounded-full border border-foreground/25 p-1 max-md:hidden"
@@ -110,7 +118,7 @@
 				</li>
 			{/each}
 		</ul>
-		<div class="flex items-center gap-2">
+		<div class="flex items-center gap-2 justify-self-end">
 			{#if user}
 				<a
 					href="/verify"

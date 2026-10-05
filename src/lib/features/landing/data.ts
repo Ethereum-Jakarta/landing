@@ -68,10 +68,10 @@ export const PRINCIPLES = [
 // Only real people: placeholder cards ("Member 5 / Role Title") read as unfinished.
 // Add members here as photos (in /static/team) and roles are confirmed.
 export const TEAM = [
-	{ name: 'Revo', role: 'Community Lead', image: '/team/revo.png' },
-	{ name: 'Faisal', role: 'Developer Relations', image: '/team/faisal.png' },
-	{ name: 'Wildan', role: 'Developer Advocate', image: '/team/wildan.png' },
-	{ name: 'Rusty', role: 'Community Manager', image: '/team/rusty.png' }
+	{ name: 'Revo', role: 'Contributor', image: '/team/revo.png' },
+	{ name: 'Faisal', role: 'Contributor', image: '/team/faisal.png' },
+	{ name: 'Wildan', role: 'Contributor', image: '/team/wildan.png' },
+	{ name: 'Rusty', role: 'Contributor', image: '/team/rusty.png' }
 ];
 
 export const ROADMAP = [

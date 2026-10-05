@@ -5,7 +5,7 @@
 	import type { CalendarEvents as EventsResult } from '$lib/features/events/luma';
 	import EventCard from '$lib/features/events/components/EventCard.svelte';
 	import Button from '$lib/components/atoms/Button.svelte';
-	import Deco from './decor/Deco.svelte';
+	import Deco from '$lib/components/decor/Deco.svelte';
 	import SectionHeading from './SectionHeading.svelte';
 
 	interface Props {

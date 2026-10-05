@@ -1,10 +1,10 @@
 <script lang="ts">
-	import logoSrc from '$lib/assets/logo-ethjkt-1.png';
+	import logoSrc from '$lib/assets/logo-ethjkt-light.png';
 	import aboutBlob from '../assets/about/about_left.svg';
-	import ethCrystal from '../assets/shared/eth-crystal.webp';
+	import ethCrystal from '$lib/assets/eth-crystal.webp';
 	import EthArt from '../assets/EthArt.svelte';
 	import { ROADMAP } from '../data';
-	import Deco from './decor/Deco.svelte';
+	import Deco from '$lib/components/decor/Deco.svelte';
 
 	interface Props {
 		/** Desktop: sticky row that splits into cards and flips them as you scroll. */
