@@ -5,4 +5,4 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<LandingPage user={data.user} events={data.events} />
+<LandingPage events={data.events} />

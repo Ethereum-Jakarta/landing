@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { SOCIAL_LINKS } from '$lib/constants';
 	import heroSkyline from '../assets/hero/hero-skyline-haze.webp';
 	import Bird from './decor/Bird.svelte';
 	import BirdFlock from './decor/BirdFlock.svelte';
@@ -109,7 +110,7 @@
 			/>
 			<h1
 				aria-label="Build the Future of {headWord} at ETHJKT"
-				class="m-0 font-montserrat text-[clamp(36px,7vw,112px)] leading-[1.04] font-light tracking-[-0.02em] text-foreground"
+				class="m-0 font-montserrat text-display font-light text-foreground"
 			>
 				<span aria-hidden="true" class="flex flex-wrap items-end justify-center gap-x-[0.24em]">
 					<span class={wordMask}
@@ -165,11 +166,15 @@
 		</div>
 		<p
 			data-a="hero-sub"
-			class="mt-[clamp(14px,2.2vh,24px)] max-w-[46ch] text-[clamp(15px,1.25vw,18px)] leading-[1.55] text-balance text-ink-soft"
+			class="mt-[clamp(14px,2.2vh,24px)] max-w-[46ch] text-body-lg text-balance text-ink-soft"
 		>
-			Build, Innovate, and Connect with the Ethereum Community in Indonesia.
+			Jakarta's Ethereum community. Free meetups, workshops and hackathons for builders at every
+			level.
 		</p>
-		<div data-a="hero-cta" class="relative mt-[clamp(24px,4.5vh,44px)]">
+		<div
+			data-a="hero-cta"
+			class="relative mt-[clamp(24px,4.5vh,44px)] flex flex-col items-center gap-4"
+		>
 			<span
 				aria-hidden="true"
 				class="pointer-events-none absolute -top-11 right-full mr-1.5 w-[clamp(70px,6.4vw,100px)] text-foreground max-md:hidden"
@@ -187,11 +192,19 @@
 					</g>
 				</svg>
 			</span>
+			<!-- Lowest-friction next step for a newcomer: a real, dated event (no wallet needed). -->
 			<a
-				href="/login"
+				href="#events"
 				data-magnetic
-				class="inline-flex items-center gap-2.5 rounded-full bg-primary px-[30px] py-[15px] text-[clamp(15px,1.15vw,17px)] font-semibold text-foreground shadow-cta transition-colors duration-250 hover:bg-primary-hover"
-				>Start Your Ethereum Journey</a
+				class="inline-flex items-center gap-2.5 rounded-full bg-primary px-[30px] py-[15px] text-[clamp(15px,1.15vw,17px)] font-semibold text-primary-foreground shadow-cta transition-colors duration-250 hover:bg-primary-hover"
+				>See upcoming events</a
+			>
+			<a
+				href={SOCIAL_LINKS.discord}
+				target="_blank"
+				rel="noopener"
+				class="text-sm font-semibold text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground"
+				>or join our Discord</a
 			>
 		</div>
 	</div>

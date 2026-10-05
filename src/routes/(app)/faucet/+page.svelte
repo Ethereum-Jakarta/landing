@@ -1,12 +1,19 @@
 <script lang="ts">
 	import Button from '$lib/components/atoms/Button.svelte';
+	import Notice from '$lib/components/atoms/Notice.svelte';
+	import { providerName, readError } from '$lib/utils/errors';
 
-	const chains = [
-		{ chainId: 11155111, name: 'Sepolia', explorer: 'https://sepolia.etherscan.io/tx/' },
-		{ chainId: 84532, name: 'Base Sepolia', explorer: 'https://sepolia.basescan.org/tx/' }
-	] as const;
+	let { data } = $props();
 
-	type Result = { txHash: string } | { error: string; verify?: boolean };
+	const EXPLORERS: Record<number, string> = {
+		11155111: 'https://sepolia.etherscan.io/tx/',
+		84532: 'https://sepolia.basescan.org/tx/'
+	};
+
+	const linked = $derived(new Set<string>(data.links.map((l) => l.provider)));
+	const missing = $derived(data.required.filter((p) => !linked.has(p)));
+
+	type Result = { txHash: string } | { error: string; needsHub?: boolean };
 
 	let pending = $state<number | null>(null);
 	let results = $state<Record<number, Result>>({});
@@ -19,65 +26,91 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ chainId, token: 'native' })
 			});
-			const body = await res.json().catch(() => ({}));
-			if (res.ok && body.txHash) {
-				results[chainId] = { txHash: body.txHash };
-			} else if (res.status === 429) {
-				results[chainId] = { error: 'Already claimed. Try again later.' };
+			if (res.ok) {
+				const body = await res.json().catch(() => ({}));
+				results[chainId] = body.txHash
+					? { txHash: body.txHash }
+					: { error: "The claim didn't go through. Please try again." };
 			} else {
 				results[chainId] = {
-					error: body.message ?? 'Claim failed.',
-					verify: res.status === 403 || res.status === 412
+					error: await readError(res, "The claim didn't go through. Please try again."),
+					needsHub: res.status === 403 || res.status === 412
 				};
 			}
 		} catch {
-			results[chainId] = { error: 'Network error. Try again.' };
+			results[chainId] = { error: 'Network error. Check your connection and try again.' };
 		} finally {
 			pending = null;
 		}
 	}
 </script>
 
-<section class="mx-auto max-w-3xl px-6 py-16">
+<svelte:head>
+	<title>Gas Tanks · ETHJKT</title>
+</svelte:head>
+
+<div class="mx-auto w-full max-w-3xl px-5 py-10 sm:py-14">
 	<h1 class="font-montserrat text-3xl font-bold text-foreground">Gas Tanks</h1>
-	<p class="mt-2 font-inter text-muted">Top up testnet gas for the launch chains.</p>
+	<p class="mt-2 max-w-[56ch] text-body text-muted">
+		Free testnet ETH for building and testing. One claim per chain per day, sent straight to your
+		signed-in wallet.
+	</p>
 
-	<div class="mt-10 grid gap-6 sm:grid-cols-2">
-		{#each chains as chain (chain.chainId)}
+	{#if missing.length}
+		<Notice tone="info" class="mt-6">
+			Link {missing.map(providerName).join(', ')} to unlock claims.
+			<a href="/verify" class="font-semibold underline underline-offset-2">Go to your Hub →</a>
+		</Notice>
+	{/if}
+
+	<div class="mt-8 grid gap-4 sm:grid-cols-2">
+		{#each data.chains as chain (chain.chainId)}
 			{@const result = results[chain.chainId]}
-			<div class="flex flex-col rounded-2xl border border-muted/20 bg-background p-6 shadow-sm">
-				<h2 class="font-montserrat text-xl font-semibold text-foreground">{chain.name}</h2>
-				<p class="mt-1 font-inter text-sm text-muted">Chain ID {chain.chainId}</p>
+			<section
+				aria-labelledby="chain-{chain.chainId}"
+				class="flex flex-col rounded-[28px] p-6 shadow-soft-ring"
+			>
+				<div class="flex items-baseline justify-between gap-3">
+					<h2 id="chain-{chain.chainId}" class="font-montserrat text-xl font-bold text-foreground">
+						{chain.name}
+					</h2>
+					<span class="text-xs text-muted">Chain ID {chain.chainId}</span>
+				</div>
+				<p class="mt-1 text-sm text-muted">{chain.amount} per claim</p>
 
-				<div class="mt-6 flex-1">
+				<div class="mt-5 flex-1" aria-live="polite">
 					{#if result && 'txHash' in result}
-						<p class="font-inter text-sm text-foreground">Sent!</p>
-						<a
-							href="{chain.explorer}{result.txHash}"
-							target="_blank"
-							rel="noopener noreferrer"
-							class="mt-1 block truncate font-inter text-sm text-secondary underline"
-						>
-							{result.txHash}
-						</a>
+						<Notice tone="success">
+							Sent! It usually lands within a minute.
+							<a
+								href="{EXPLORERS[chain.chainId] ?? '#'}{result.txHash}"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="mt-1 block truncate font-semibold underline underline-offset-2"
+								>View transaction</a
+							>
+						</Notice>
 					{:else if result}
-						<p class="font-inter text-sm text-foreground">{result.error}</p>
-						{#if result.verify}
-							<a href="/verify" class="mt-1 block font-inter text-sm text-secondary underline">
-								Verify your accounts to claim
-							</a>
-						{/if}
+						<Notice tone="danger">
+							{result.error}
+							{#if result.needsHub}
+								<a href="/verify" class="mt-1 block font-semibold underline underline-offset-2"
+									>Finish linking in your Hub →</a
+								>
+							{/if}
+						</Notice>
 					{/if}
 				</div>
 
 				<Button
-					class="mt-6 w-full disabled:pointer-events-none disabled:opacity-50"
+					class="mt-5 w-full"
+					loading={pending === chain.chainId}
+					disabled={missing.length > 0 || (!!result && 'txHash' in result)}
 					onclick={() => claim(chain.chainId)}
-					disabled={pending === chain.chainId}
 				>
-					{pending === chain.chainId ? 'Claiming…' : 'Claim'}
+					{pending === chain.chainId ? 'Sending…' : `Claim ${chain.amount}`}
 				</Button>
-			</div>
+			</section>
 		{/each}
 	</div>
-</section>
+</div>

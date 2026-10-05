@@ -1,6 +1,6 @@
 <script lang="ts">
 	import aboutBlob from '../assets/about/about_left.svg';
-	import aboutPeople from '../assets/suyasyua.png';
+	import aboutPeople from '../assets/about-community.webp';
 	import { PRINCIPLES } from '../data';
 	import Deco from './decor/Deco.svelte';
 
@@ -22,7 +22,8 @@
 
 {#snippet heading()}
 	<h2
-		class="m-0 flex flex-wrap justify-center gap-x-[0.26em] font-montserrat text-[clamp(32px,4.2vw,60px)] leading-[1.1] font-extrabold tracking-[-0.02em] text-foreground"
+		id="about-title"
+		class="m-0 flex flex-wrap justify-center gap-x-[0.26em] font-montserrat text-h2 font-extrabold text-foreground"
 	>
 		{#each ['Welcome', 'to', 'ETHJKT'] as word (word)}
 			<span class="inline-block overflow-hidden pb-[0.08em]"
@@ -59,9 +60,10 @@
 	>
 {/snippet}
 
-<section id="about" class="relative bg-background">
+<section id="about" aria-labelledby="about-title" class="relative bg-background">
 	{#if pinned}
-		<div data-a="pr-track" class="relative h-[420vh]">
+		<!-- ~0.5 viewport of scroll per card: enough to read, short enough not to feel hijacked. -->
+		<div data-a="pr-track" class="relative h-[300vh]">
 			<div
 				data-a="pr-stage"
 				class="sticky top-0 flex h-svh flex-col overflow-hidden px-[clamp(24px,4vw,64px)] pt-[clamp(84px,11vh,104px)] pb-[clamp(24px,4vh,44px)]"
@@ -183,9 +185,7 @@
 			<div data-a="reveal" class="relative mx-auto mt-8 aspect-[628/397] w-full max-w-[560px]">
 				{@render halo()}
 			</div>
-			<div
-				class="mt-[72px] grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-x-5 gap-y-[72px]"
-			>
+			<div class="mt-[72px] grid gap-x-5 gap-y-[72px] sm:grid-cols-2">
 				{#each PRINCIPLES as p (p.num)}
 					<article
 						data-a="reveal"

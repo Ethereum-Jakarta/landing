@@ -13,6 +13,7 @@
 
 <section
 	id="join"
+	aria-labelledby="join-title"
 	data-a="join"
 	class="relative flex min-h-[max(100svh,760px)] flex-col items-center overflow-hidden bg-[linear-gradient(180deg,var(--color-background)_0%,var(--color-sky-pale)_38%,var(--color-secondary)_100%)]"
 >
@@ -85,7 +86,8 @@
 			/>
 			<h2
 				data-a="join-title"
-				class="mx-auto max-w-[18ch] font-montserrat text-[clamp(30px,4.4vw,64px)] leading-[1.15] font-extrabold tracking-[-0.02em] text-balance text-foreground"
+				id="join-title"
+				class="mx-auto max-w-[18ch] font-montserrat text-h2 font-extrabold text-balance text-foreground"
 			>
 				Curious About Web3? Let's Learn It Together
 			</h2>
@@ -101,7 +103,9 @@
 					data-a="join-btn"
 					data-magnetic
 					data-spark-host
-					class="relative inline-flex items-center gap-3 rounded-full bg-primary py-2.5 pr-6 pl-2.5 text-foreground shadow-social transition-colors duration-250 hover:bg-primary-hover"
+					class="relative inline-flex items-center gap-3 rounded-full py-2.5 pr-6 pl-2.5 text-foreground shadow-social transition-colors duration-250 {s.primary
+						? 'bg-primary hover:bg-primary-hover'
+						: 'bg-background hover:bg-sky-wash'}"
 				>
 					<span
 						aria-hidden="true"
@@ -114,7 +118,7 @@
 					<span
 						class="flex size-[38px] flex-none items-center justify-center rounded-full bg-tertiary text-tertiary-foreground"
 					>
-						<svg width="20" height="20"><use href={s.icon} /></svg>
+						<svg width="20" height="20" aria-hidden="true"><use href={s.icon} /></svg>
 					</span>
 					<span class="text-left text-sm leading-[1.2] font-semibold">
 						<span class="block">{s.l1}</span>

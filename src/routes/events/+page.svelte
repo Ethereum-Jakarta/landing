@@ -1,82 +1,109 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import EventCard from '$lib/features/events/components/EventCard.svelte';
-	import Logo from '$lib/components/atoms/Logo.svelte';
-	import NavTabs from '$lib/components/molecules/NavTabs.svelte';
 	import Button from '$lib/components/atoms/Button.svelte';
+	import SiteHeader from '$lib/components/organism/SiteHeader.svelte';
+	import SiteFooter from '$lib/components/organism/SiteFooter.svelte';
 
 	let { data }: { data: PageData } = $props();
 
-	const navItems = [
-		{ label: 'Home', href: '/' },
-		{ label: 'About Us', href: '/#about' },
-		{ label: 'Events', href: '/events' }
-	];
+	const PAST_SHOWN = 9;
+	const LUMA = 'https://luma.com/ethjkt';
+	const past = $derived(data.past.slice(0, PAST_SHOWN));
+	const description =
+		'Meetups, workshops and hackathons from Ethereum Jakarta (ETHJKT). Most events are free and open to builders of every level.';
 </script>
 
 <svelte:head>
 	<title>Events · ETHJKT</title>
-	<meta name="description" content="Upcoming and recent Ethereum Jakarta community events." />
+	<meta name="description" content={description} />
+	<meta property="og:title" content="Events · ETHJKT" />
+	<meta property="og:description" content={description} />
+	<meta property="og:type" content="website" />
+	<meta name="twitter:card" content="summary" />
 </svelte:head>
 
-<div class="min-h-screen bg-background">
-	<!-- Gradient header band, matching the hero -->
-	<section class="relative overflow-hidden bg-linear-to-b from-secondary to-background">
-		<header class="relative z-10 flex items-center justify-between px-8 py-6 lg:px-16">
-			<a href="/"><Logo height={32} /></a>
-			<NavTabs items={navItems} class="hidden md:block" />
-			<div class="w-8 md:w-0"></div>
-		</header>
+<SiteHeader active="events" />
 
-		<div class="relative z-10 px-6 py-16 text-center md:py-24">
-			<h1 class="font-montserrat text-5xl font-bold text-tertiary md:text-6xl">Events</h1>
-			<p class="mx-auto mt-6 max-w-2xl font-inter text-xl font-light text-muted">
-				Meetups, workshops & hackathons from the Ethereum community in Indonesia.
-			</p>
-		</div>
+<main id="main" class="min-h-svh bg-background">
+	<section
+		class="bg-linear-to-b from-secondary to-background px-5 pt-36 pb-14 text-center sm:pt-44"
+	>
+		<h1 class="font-montserrat text-h2 font-extrabold text-foreground">Events</h1>
+		<p class="mx-auto mt-4 max-w-[52ch] text-body-lg text-ink-soft">
+			Meetups, workshops and hackathons with the Ethereum community in Indonesia. Most are free, and
+			every event is open to beginners.
+		</p>
 	</section>
 
-	<main class="mx-auto max-w-6xl px-6 py-16">
+	<div class="mx-auto max-w-[1200px] px-[clamp(20px,5vw,64px)] pb-24">
 		{#if data.failed}
-			<p class="text-center font-inter text-muted">
-				Couldn't load events right now. See them on
-				<a class="text-primary underline" href="https://luma.com/ethjkt">Lu.ma</a>.
-			</p>
+			<div class="mx-auto max-w-[46ch] py-16 text-center">
+				<h2 class="font-montserrat text-h3 font-bold text-foreground">
+					We couldn't load events right now
+				</h2>
+				<p class="mt-3 text-body text-muted">
+					Lu.ma didn't respond. Every ETHJKT event is also listed on our Lu.ma page.
+				</p>
+				<Button href={LUMA} target="_blank" rel="noopener" class="mt-6">Open ETHJKT on Lu.ma</Button
+				>
+			</div>
 		{:else}
-			{#if data.upcoming.length}
-				<section class="mb-16">
-					<h2 class="mb-8 font-montserrat text-3xl font-bold text-foreground">Upcoming</h2>
-					<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+			<section aria-labelledby="upcoming-title" class="pt-4">
+				<h2 id="upcoming-title" class="font-montserrat text-h3 font-bold text-foreground">
+					Upcoming
+				</h2>
+				{#if data.upcoming.length}
+					<div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 						{#each data.upcoming as event (event.id)}
-							<EventCard {event} />
+							<EventCard {event} upcoming />
+						{/each}
+					</div>
+				{:else}
+					<!-- Empty state: what this is, why it's empty, what to do next. -->
+					<div class="mt-6 rounded-[28px] bg-sky-wash px-6 py-10 text-center">
+						<p class="font-semibold text-foreground">Nothing scheduled right now</p>
+						<p class="mx-auto mt-2 max-w-[48ch] text-sm text-muted">
+							New meetups and workshops are announced on Lu.ma and in our Discord first. Follow us
+							to get notified.
+						</p>
+						<Button
+							href={LUMA}
+							target="_blank"
+							rel="noopener"
+							variant="tertiary"
+							size="sm"
+							class="mt-5">Follow on Lu.ma</Button
+						>
+					</div>
+				{/if}
+			</section>
+
+			{#if past.length}
+				<section aria-labelledby="past-title" class="mt-16">
+					<div class="flex flex-wrap items-baseline justify-between gap-3">
+						<h2 id="past-title" class="font-montserrat text-h3 font-bold text-foreground">
+							Recent events
+						</h2>
+						{#if data.past.length > PAST_SHOWN}
+							<a
+								href={LUMA}
+								target="_blank"
+								rel="noopener"
+								class="text-sm font-semibold text-foreground underline underline-offset-4"
+								>See all past events on Lu.ma →</a
+							>
+						{/if}
+					</div>
+					<div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						{#each past as event (event.id)}
+							<EventCard {event} upcoming={false} />
 						{/each}
 					</div>
 				</section>
-			{/if}
-
-			{#if data.past.length}
-				<section>
-					<h2 class="mb-8 font-montserrat text-3xl font-bold text-foreground">
-						{data.upcoming.length ? 'Past events' : 'Recent events'}
-					</h2>
-					<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-						{#each data.past as event (event.id)}
-							<EventCard {event} />
-						{/each}
-					</div>
-				</section>
-			{/if}
-
-			{#if !data.upcoming.length && !data.past.length}
-				<div class="py-16 text-center">
-					<p class="font-inter text-lg text-muted">No events scheduled yet — check back soon.</p>
-					<div class="mt-6">
-						<Button href="https://luma.com/ethjkt" target="_blank" rel="noopener" size="lg">
-							Follow us on Lu.ma
-						</Button>
-					</div>
-				</div>
 			{/if}
 		{/if}
-	</main>
-</div>
+	</div>
+</main>
+
+<SiteFooter />

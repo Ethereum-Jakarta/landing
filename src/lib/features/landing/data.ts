@@ -12,22 +12,7 @@ export type Breakpoint = 's' | 'm' | 'l';
 
 export const breakpointOf = (w: number): Breakpoint => (w < 768 ? 's' : w < 1100 ? 'm' : 'l');
 
-export const SECTION_IDS = ['top', 'about', 'team', 'roadmap', 'events', 'faq', 'join'] as const;
-
-export const NAV_ITEMS = [
-	{ label: 'About Us', href: '#about', section: 'about' },
-	{ label: 'Events', href: '/events', section: '' },
-	{ label: 'Docs', href: '#docs', section: '' }
-];
-
-export const MENU_ITEMS = [
-	{ label: 'About Us', href: '#about' },
-	{ label: 'Team', href: '#team' },
-	{ label: 'Roadmap', href: '#roadmap' },
-	{ label: 'FAQ', href: '#faq' },
-	{ label: 'Events', href: '/events' },
-	{ label: 'Docs', href: '#docs' }
-];
+export const SECTION_IDS = ['top', 'about', 'events', 'programs', 'team', 'faq', 'join'] as const;
 
 /**
  * `bg`/`fg` are theme color names (resolved from CSS vars at animation time) used when a
@@ -80,17 +65,13 @@ export const PRINCIPLES = [
 	}
 ];
 
+// Only real people: placeholder cards ("Member 5 / Role Title") read as unfinished.
+// Add members here as photos (in /static/team) and roles are confirmed.
 export const TEAM = [
 	{ name: 'Revo', role: 'Community Lead', image: '/team/revo.png' },
 	{ name: 'Faisal', role: 'Developer Relations', image: '/team/faisal.png' },
 	{ name: 'Wildan', role: 'Developer Advocate', image: '/team/wildan.png' },
-	{ name: 'Rusty', role: 'Community Manager', image: '/team/rusty.png' },
-	{ name: 'Member 5', role: 'Role Title', image: '' },
-	{ name: 'Member 6', role: 'Role Title', image: '' },
-	{ name: 'Member 7', role: 'Role Title', image: '' },
-	{ name: 'Member 8', role: 'Role Title', image: '' },
-	{ name: 'Member 9', role: 'Role Title', image: '' },
-	{ name: 'Member 10', role: 'Role Title', image: '' }
+	{ name: 'Rusty', role: 'Community Manager', image: '/team/rusty.png' }
 ];
 
 export const ROADMAP = [
@@ -126,9 +107,9 @@ export const ROADMAP = [
 
 export const FAQS = [
 	{
-		title: 'What is ETHJKT all about?',
+		title: 'What is ETHJKT?',
 		content:
-			'ETHJKT will gather the brightest minds in blockchain, offering you a chance to connect with developers, entrepreneurs, and Web3 enthusiasts.'
+			'ETHJKT (Ethereum Jakarta) is a community for people learning and building on Ethereum in Indonesia. We run meetups, workshops, study groups and hackathons, often with partners like MetaMask, Celo and Lisk.'
 	},
 	{
 		title: 'Who is ETHJKT for? Can beginners join?',
@@ -136,24 +117,31 @@ export const FAQS = [
 			'ETHJKT is for everyone! Whether you are a seasoned developer, a curious beginner, or simply interested in blockchain technology, you are welcome to join and learn.'
 	},
 	{
-		title: 'What happens during the ETHJKT event?',
+		title: 'How do I join?',
 		content:
-			'The event features workshops, hackathons, networking sessions, and talks from industry leaders. You will have the opportunity to build projects, learn new skills, and connect with the community.'
+			'Join our Discord to meet the community, then register for an upcoming event on Lu.ma. Members can also sign in with a wallet to link their accounts and claim free testnet gas.'
 	},
 	{
-		title: 'How do I join or register for ETHJKT?',
+		title: 'Do events cost anything?',
 		content:
-			'You can register through our official website. Simply click on the registration button and fill out the form. Early registration is recommended as spots are limited.'
+			"Most ETHJKT events are free. Each event's Lu.ma page lists the price, location and how many spots are left, so check there before you go."
 	},
 	{
-		title: 'Are there prizes or rewards for participants?',
+		title: 'What happens at a hackathon?',
 		content:
-			'Yes! There are exciting prizes for hackathon winners, including cash prizes, tokens, and opportunities to connect with potential investors and partners.'
+			'Teams spend building days shipping a project on Ethereum, then present it on demo day. Hackathons usually come with prizes and a chance to meet partners. Each hackathon page lists its prize pool and rules.'
 	}
 ];
 
+// Discord is the community's home, so it's the one primary action; the rest are follow links.
 export const SOCIALS = [
-	{ l1: 'Join the', l2: 'Community', href: SOCIAL_LINKS.discord, icon: '#ic-discord' },
-	{ l1: 'Follow On', l2: 'Instagram', href: SOCIAL_LINKS.instagram, icon: '#ic-instagram' },
-	{ l1: 'Hang Out', l2: 'on X', href: SOCIAL_LINKS.x, icon: '#ic-x' }
+	{ l1: 'Join the', l2: 'Discord', href: SOCIAL_LINKS.discord, icon: '#ic-discord', primary: true },
+	{
+		l1: 'Follow on',
+		l2: 'Instagram',
+		href: SOCIAL_LINKS.instagram,
+		icon: '#ic-instagram',
+		primary: false
+	},
+	{ l1: 'Follow on', l2: 'X', href: SOCIAL_LINKS.x, icon: '#ic-x', primary: false }
 ];

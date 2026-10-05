@@ -4,6 +4,7 @@
 	import { TEAM } from '../data';
 	import BirdFlock from './decor/BirdFlock.svelte';
 	import Deco from './decor/Deco.svelte';
+	import SectionHeading from './SectionHeading.svelte';
 
 	interface Props {
 		/** Native horizontal scrolling (mobile / reduced motion) instead of the scroll-scrubbed track. */
@@ -17,6 +18,7 @@
 
 <section
 	id="team"
+	aria-labelledby="team-title"
 	class="relative overflow-hidden bg-background pt-[clamp(72px,13vh,150px)] pb-[clamp(56px,9vh,110px)]"
 >
 	<BirdFlock class="top-[5%] max-md:hidden" dur={62} birds={[{ class: 'top-0 left-0 w-[22px]' }]} />
@@ -42,13 +44,11 @@
 		<EthArt class="block h-auto w-full" />
 	</div>
 
-	<div class="relative px-5 text-center">
-		<h2
-			data-a="sec-title"
-			class="m-0 font-montserrat text-[clamp(32px,4.2vw,60px)] leading-[1.1] font-extrabold tracking-[-0.02em] text-foreground"
-		>
-			Meet Our Team
-		</h2>
+	<SectionHeading
+		id="team-title"
+		title="Meet Our Team"
+		sub="Say hi to the team making ETHJKT happen."
+	>
 		<Deco
 			icon="d-spark-4"
 			viewBox="0 0 24 24"
@@ -63,13 +63,7 @@
 			amb="twinkle"
 			class="top-1.5 left-[calc(50%+min(250px,31vw))] w-[13px] text-foreground"
 		/>
-		<p
-			data-a="sec-sub"
-			class="mx-auto mt-3 text-[clamp(15px,1.25vw,18px)] leading-[1.5] text-muted"
-		>
-			Say hi to the team making ETHJKT happen.
-		</p>
-	</div>
+	</SectionHeading>
 
 	<div
 		data-a="team-viewport"
@@ -79,7 +73,7 @@
 	>
 		<div
 			data-a="team-track"
-			class="flex w-max gap-[clamp(14px,1.6vw,24px)] px-[clamp(20px,8vw,120px)] will-change-transform"
+			class="mx-auto flex w-max gap-[clamp(14px,1.6vw,24px)] px-[clamp(20px,8vw,120px)] will-change-transform"
 		>
 			{#each TEAM as m (m.name)}
 				<div
@@ -93,7 +87,7 @@
 						role="group"
 						tabindex="0"
 						aria-label="{m.name}, {m.role}"
-						class="relative size-full cursor-pointer outline-none transform-3d"
+						class="relative size-full cursor-pointer rounded-[14px] transform-3d"
 					>
 						<div data-a="tm-inner" class="absolute inset-0 transform-3d">
 							<div class="{faceClass} bg-sky-wash">

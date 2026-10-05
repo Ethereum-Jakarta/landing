@@ -44,7 +44,7 @@
 	oncancel={(event) => {
 		if (!dismissible) event.preventDefault();
 	}}
-	class="m-auto w-full max-w-sm rounded-3xl border border-muted/20 bg-background p-0 shadow-xl backdrop:bg-tertiary/40 backdrop:backdrop-blur-sm"
+	class="m-auto w-full max-w-sm rounded-3xl border border-foreground/10 bg-background p-0 shadow-xl backdrop:bg-tertiary/40 backdrop:backdrop-blur-sm"
 >
 	<div class="p-8">
 		{#if title || dismissible}
@@ -57,7 +57,7 @@
 						type="button"
 						aria-label="Close"
 						onclick={close}
-						class="ml-auto rounded-full p-1 text-muted transition-colors hover:text-foreground"
+						class="ml-auto flex size-9 cursor-pointer items-center justify-center rounded-full text-muted transition-colors hover:bg-foreground/7 hover:text-foreground"
 					>
 						<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 							<path

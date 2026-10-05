@@ -16,8 +16,7 @@
 	const faceClass = 'absolute inset-0 rounded-3xl backface-hidden';
 	const frontClass = `${faceClass} flex flex-col items-center justify-center gap-3 border border-foreground/8 bg-background bg-[radial-gradient(color-mix(in_srgb,var(--color-foreground)_8%,transparent)_2px,transparent_2px)] bg-size-[22px_22px] p-6 text-center`;
 	const backClass = `${faceClass} flex rotate-y-180 flex-col items-center overflow-hidden bg-background text-center shadow-flip`;
-	const headingClass =
-		'm-0 font-montserrat text-[clamp(32px,4.2vw,60px)] leading-[1.1] font-extrabold tracking-[-0.02em] text-foreground';
+	const headingClass = 'm-0 font-montserrat text-h2 font-extrabold text-foreground';
 </script>
 
 {#snippet artFrame(r: (typeof ROADMAP)[number])}
@@ -38,7 +37,11 @@
 	</div>
 {/snippet}
 
-<section id="roadmap" class="relative overflow-clip bg-background">
+<section
+	id="programs"
+	aria-labelledby="programs-title"
+	class="relative overflow-clip bg-background"
+>
 	<div
 		data-a="ethart"
 		aria-hidden="true"
@@ -48,7 +51,7 @@
 	</div>
 
 	{#if pinned}
-		<div data-a="rm-track" class="relative h-[340vh]">
+		<div data-a="rm-track" class="relative h-[240vh]">
 			<div
 				class="sticky top-0 flex h-svh flex-col items-center justify-center overflow-hidden pt-[84px] pb-7"
 			>
@@ -97,9 +100,9 @@
 					class="right-[30%] bottom-[2%] w-[26px] text-secondary"
 				/>
 				<div data-a="rm-head" class="px-5 text-center">
-					<h2 class={headingClass}>Roadmap</h2>
+					<h2 id="programs-title" class={headingClass}>What We Run</h2>
 					<p class="mt-2.5 text-[clamp(15px,1.25vw,18px)] leading-[1.5] text-muted">
-						look at what's coming next for ETHJKT.
+						Four ways to learn and build with us, all year round.
 					</p>
 				</div>
 				<div
@@ -143,12 +146,12 @@
 	{:else}
 		<div class="mx-auto max-w-[1100px] px-5 pt-[clamp(64px,10vh,110px)] pb-[clamp(40px,6vh,80px)]">
 			<div class="text-center">
-				<h2 class={headingClass}>Roadmap</h2>
-				<p class="mt-2.5 text-base leading-[1.5] text-muted">
-					look at what's coming next for ETHJKT.
+				<h2 id="programs-title" class={headingClass}>What We Run</h2>
+				<p class="mt-2.5 text-body-lg text-muted">
+					Four ways to learn and build with us, all year round.
 				</p>
 			</div>
-			<div class="mt-9 grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-5">
+			<div class="mt-9 grid gap-5 sm:grid-cols-2">
 				{#each ROADMAP as r (r.num)}
 					<div data-a="rm-card" class="relative h-[500px] perspective-[1600px]">
 						<div data-a="rm-inner" class="absolute inset-0 transform-3d">

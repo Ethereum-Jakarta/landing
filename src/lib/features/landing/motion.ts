@@ -462,7 +462,7 @@ export function initLandingMotion(root: HTMLElement, opts: MotionOptions): () =>
 					duration: 1.2,
 					stagger: 0.12,
 					ease: 'back.out(1.6)',
-					scrollTrigger: { trigger: A('rm-track') || '#roadmap', start: 'top 60%' }
+					scrollTrigger: { trigger: A('rm-track') || '#programs', start: 'top 60%' }
 				});
 			const fsp = A('faq-spark');
 			if (fsp)
@@ -999,24 +999,30 @@ export function initLandingMotion(root: HTMLElement, opts: MotionOptions): () =>
 		const poses = () => {
 			const H = window.innerHeight;
 			const ab = sec('about');
+			const ev = sec('events');
+			const rm = sec('programs');
 			const tm = sec('team');
-			const rm = sec('roadmap');
 			const fq = sec('faq');
 			const jn = sec('join');
-			if (!ab || !tm || !rm || !fq || !jn) return;
+			if (!ab || !ev || !rm || !tm || !fq || !jn) return;
 			heroEnd = top(ab);
 			joinTop = top(jn);
-			P = [
-				[0, 0.86, 0.3],
-				...aboutPoses(H, ab),
-				[top(tm), 0.1, 0.22],
-				[top(tm) + tm.offsetHeight * 0.5, 0.9, 0.85],
-				[top(rm), 0.88, 0.14],
-				[top(rm) + rm.offsetHeight - H, 0.08, 0.86],
-				[top(fq), 0.92, 0.18],
-				[joinTop - H * 0.35, 0.22, 0.3],
-				[joinTop, 0.8, 0.42]
-			];
+			// Waypoints follow page order (about → events → programs → team → faq → join);
+			// sorted defensively so a reorder can never send the plane backwards.
+			P = (
+				[
+					[0, 0.86, 0.3],
+					...aboutPoses(H, ab),
+					[top(ev), 0.9, 0.2],
+					[top(rm), 0.88, 0.14],
+					[top(rm) + rm.offsetHeight - H, 0.08, 0.86],
+					[top(tm), 0.1, 0.22],
+					[top(tm) + tm.offsetHeight * 0.5, 0.9, 0.85],
+					[top(fq), 0.92, 0.18],
+					[joinTop - H * 0.35, 0.22, 0.3],
+					[joinTop, 0.8, 0.42]
+				] as Pose[]
+			).sort((a, b) => a[0] - b[0]);
 		};
 		poses();
 		const onRefresh = () => poses();

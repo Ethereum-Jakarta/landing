@@ -2,6 +2,7 @@
 	import faqArt from '../assets/faq/faq-art.svg';
 	import EthArt from '../assets/EthArt.svelte';
 	import { FAQS } from '../data';
+	import SectionHeading from './SectionHeading.svelte';
 
 	interface Props {
 		/** Fired after an item toggles (spins the star, re-measures scroll triggers). */
@@ -20,6 +21,7 @@
 
 <section
 	id="faq"
+	aria-labelledby="faq-title"
 	class="relative overflow-hidden bg-background pt-[clamp(72px,13vh,150px)] pb-[clamp(80px,14vh,160px)]"
 >
 	<div
@@ -37,20 +39,11 @@
 		<EthArt class="block h-auto w-full -scale-x-100" />
 	</div>
 
-	<div class="relative px-5 text-center">
-		<h2
-			data-a="sec-title"
-			class="m-0 font-montserrat text-[clamp(32px,4.2vw,60px)] leading-[1.1] font-extrabold tracking-[-0.02em] text-foreground"
-		>
-			ETHJKT — FAQs
-		</h2>
-		<p
-			data-a="sec-sub"
-			class="mx-auto mt-3 text-[clamp(15px,1.25vw,18px)] leading-[1.5] text-muted"
-		>
-			Answers to the most common questions about ETHJKT.
-		</p>
-	</div>
+	<SectionHeading
+		id="faq-title"
+		title="ETHJKT — FAQs"
+		sub="Answers to the most common questions about ETHJKT."
+	/>
 
 	<div
 		class="relative mx-auto mt-[clamp(40px,7vh,72px)] flex max-w-[1200px] flex-wrap-reverse items-center justify-center gap-[clamp(32px,6vw,96px)] px-[clamp(20px,5vw,64px)]"
