@@ -78,30 +78,33 @@ async function fetchPeriod(
 	return (data.entries ?? []).map(normalize);
 }
 
+export type CalendarEvents = { upcoming: LumaEvent[]; past: LumaEvent[]; failed: boolean };
+
+// Pages render per-user headers now, so responses can't be CDN-cached; keep Lu.ma
+// traffic and latency down with a short in-memory cache per limit instead.
+const TTL_MS = 5 * 60_000;
+const cache = new Map<number, { at: number; data: CalendarEvents }>();
+
 // Upcoming events, plus recent past ones as a fallback (the calendar is often empty of future events).
 export async function getCalendarEvents(
-	fetchFn: typeof fetch
-): Promise<{ upcoming: LumaEvent[]; past: LumaEvent[]; failed: boolean }> {
+	fetchFn: typeof fetch,
+	limit = 50
+): Promise<CalendarEvents> {
+	const hit = cache.get(limit);
+	if (hit && Date.now() - hit.at < TTL_MS) return hit.data;
+	const data = await fetchCalendarEvents(fetchFn, limit);
+	if (!data.failed) cache.set(limit, { at: Date.now(), data });
+	return data;
+}
+
+async function fetchCalendarEvents(fetchFn: typeof fetch, limit: number): Promise<CalendarEvents> {
 	try {
 		const [upcoming, past] = await Promise.all([
-			fetchPeriod(fetchFn, 'future', 50),
-			fetchPeriod(fetchFn, 'past', 50)
+			fetchPeriod(fetchFn, 'future', limit),
+			fetchPeriod(fetchFn, 'past', limit)
 		]);
 		return { upcoming, past, failed: false };
 	} catch {
 		return { upcoming: [], past: [], failed: true };
 	}
-}
-
-export function formatEventDate(startAt: string, timezone: string): string {
-	return new Intl.DateTimeFormat('en-GB', {
-		weekday: 'short',
-		day: 'numeric',
-		month: 'short',
-		year: 'numeric',
-		hour: '2-digit',
-		minute: '2-digit',
-		timeZoneName: 'short',
-		timeZone: timezone
-	}).format(new Date(startAt));
 }

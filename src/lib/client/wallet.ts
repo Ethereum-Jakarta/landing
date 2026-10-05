@@ -4,6 +4,7 @@ import { mainnet, sepolia, baseSepolia } from '@reown/appkit/networks';
 import { getAccount, signMessage, watchAccount, type Config } from '@wagmi/core';
 import { createSiweMessage } from 'viem/siwe';
 import { env } from '$env/dynamic/public';
+import { readError } from '$lib/utils/errors';
 
 const networks = [mainnet, sepolia, baseSepolia] as const;
 
@@ -21,8 +22,8 @@ function ensureInit() {
 		networks: [...networks],
 		projectId,
 		metadata: {
-			name: 'ethjkt',
-			description: 'ethjkt member hub',
+			name: 'ETHJKT',
+			description: 'ETHJKT member hub',
 			url: typeof location !== 'undefined' ? location.origin : 'https://ethjkt.com',
 			icons: []
 		},
@@ -69,7 +70,7 @@ export async function signIn(): Promise<{ id: string; walletAddress: string }> {
 	const message = createSiweMessage({
 		domain: location.host,
 		address,
-		statement: 'Sign in to the ethjkt member hub.',
+		statement: 'Sign in to the ETHJKT member hub.',
 		uri: location.origin,
 		version: '1',
 		chainId: getAccount(wagmiConfig).chainId ?? 1,
@@ -82,7 +83,8 @@ export async function signIn(): Promise<{ id: string; walletAddress: string }> {
 		headers: { 'content-type': 'application/json' },
 		body: JSON.stringify({ message, signature })
 	});
-	if (!res.ok) throw new Error(await res.text());
+	if (!res.ok)
+		throw new Error(await readError(res, "We couldn't verify your signature. Please try again."));
 	const { user } = await res.json();
 	return user;
 }

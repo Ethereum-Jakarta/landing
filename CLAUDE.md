@@ -29,14 +29,20 @@ Always use these Tailwind color utilities defined in `src/routes/layout.css`:
 | Color                  | Hex     | Usage                               |
 | ---------------------- | ------- | ----------------------------------- |
 | `primary`              | #F2B42D | Main brand color (buttons, accents) |
-| `primary-foreground`   | #FFFFFF | Text on primary backgrounds         |
+| `primary-foreground`   | #131740 | Text on primary backgrounds         |
 | `foreground`           | #131740 | Main text color                     |
 | `background`           | #FFFFFF | Page background                     |
 | `muted`                | #5A5D79 | Subdued text (subtitles, captions)  |
 | `secondary`            | #61C8F3 | Secondary accent color              |
-| `secondary-foreground` | #FFFFFF | Text on secondary backgrounds       |
+| `secondary-foreground` | #131740 | Text on secondary backgrounds       |
 | `tertiary`             | #131740 | Tertiary accent color               |
 | `tertiary-foreground`  | #FFFFFF | Text on tertiary backgrounds        |
+
+Status colors (all ≥ 4.5:1 on white): `success` #1A7F4B, `warning` #8A5A00, `danger` #B42318, `info` #1D6FA5. Use them for feedback (`<Notice tone="danger">`), never brand colors.
+
+Primary/secondary foregrounds are navy, not white: white on #F2B42D or #61C8F3 is ~1.9:1 and fails WCAG AA.
+
+Type roles (defined in `layout.css`): `text-display`, `text-h2`, `text-h3`, `text-h4`, `text-body-lg`, `text-body`, `text-label`. Prefer these over one-off `text-[clamp(...)]` sizes.
 
 Example usage:
 

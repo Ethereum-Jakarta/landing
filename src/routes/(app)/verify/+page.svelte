@@ -1,260 +1,133 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { page } from '$app/state';
 	import Button from '$lib/components/atoms/Button.svelte';
-	import DiscordIcon from '$lib/components/icons/DiscordIcon.svelte';
-	import XTwitterIcon from '$lib/components/icons/XTwitterIcon.svelte';
-	import InstagramIcon from '$lib/components/icons/InstagramIcon.svelte';
-	import GitHubIcon from '$lib/components/icons/GitHubIcon.svelte';
-	import type { Component } from 'svelte';
-
-	type Provider = 'discord' | 'x' | 'luma' | 'instagram' | 'github';
+	import Notice from '$lib/components/atoms/Notice.svelte';
+	import PageHero from '$lib/features/member/components/PageHero.svelte';
+	import MembershipCard from '$lib/features/member/components/MembershipCard.svelte';
+	import ProviderCard from '$lib/features/member/components/ProviderCard.svelte';
+	import { PROVIDERS, type ProviderId } from '$lib/features/member/providers';
+	import { providerName } from '$lib/utils/errors';
 
 	let { data } = $props();
 
-	const linked = $derived(new Map(data.links.map((l) => [l.provider as Provider, l])));
+	const linked = $derived(new Map(data.links.map((l) => [l.provider as ProviderId, l])));
+	const required = $derived(new Set((data.required ?? []) as ProviderId[]));
+	const requiredList = $derived(PROVIDERS.filter((p) => required.has(p.id)));
+	const optionalList = $derived(PROVIDERS.filter((p) => !required.has(p.id)));
+	const requiredLinked = $derived(requiredList.filter((p) => linked.has(p.id)).length);
+	const unlocked = $derived(requiredList.length > 0 && requiredLinked === requiredList.length);
+	const nextUp = $derived(requiredList.find((p) => !linked.has(p.id)));
 
-	// live Discord roles (via bot token); null when the bot isn't configured
-	const discordLive = $derived(data.discordLive ?? null);
-	let rolesOpen = $state(false);
+	const cardProviders = $derived(
+		PROVIDERS.map((p) => ({
+			id: p.id,
+			label: p.label,
+			linked: linked.has(p.id),
+			required: required.has(p.id)
+		}))
+	);
 
+	// OAuth callbacks redirect back with ?linked=<provider> or ?error=<provider>_taken.
 	const banner = $derived.by(() => {
-		const linkedQ = $page.url.searchParams.get('linked');
-		const errorQ = $page.url.searchParams.get('error');
-		if (errorQ) return { kind: 'error' as const, text: errorQ };
-		if (linkedQ) return { kind: 'ok' as const, text: `${linkedQ} linked` };
+		const linkedQ = page.url.searchParams.get('linked');
+		const errorQ = page.url.searchParams.get('error');
+		if (errorQ) {
+			const taken = /^(\w+)_taken$/.exec(errorQ);
+			return {
+				tone: 'danger' as const,
+				text: taken
+					? `That ${providerName(taken[1])} account is already linked to another wallet. Sign in with that wallet, or link a different account.`
+					: "We couldn't link that account. Please try again."
+			};
+		}
+		if (linkedQ) return { tone: 'success' as const, text: `${providerName(linkedQ)} linked.` };
 		return null;
 	});
-
-	const short = (addr: string) => `${addr.slice(0, 6)}…${addr.slice(-4)}`;
-
-	async function doLogout() {
-		const { logout } = await import('$lib/client/wallet');
-		await logout();
-		goto('/login');
-	}
-
-	const oauth: { provider: Provider; label: string; href: string; Icon: Component }[] = [
-		{ provider: 'discord', label: 'Discord', href: '/auth/discord', Icon: DiscordIcon },
-		{ provider: 'x', label: 'X', href: '/auth/x', Icon: XTwitterIcon },
-		{ provider: 'github', label: 'GitHub', href: '/auth/github', Icon: GitHubIcon }
-	];
-
-	// Inline (bio-nonce) providers: luma, instagram
-	type Step = 'idle' | 'challenge' | 'busy';
-	const inline = $state<
-		Record<'luma' | 'instagram', { username: string; nonce: string; step: Step; error: string }>
-	>({
-		luma: { username: '', nonce: '', step: 'idle', error: '' },
-		instagram: { username: '', nonce: '', step: 'idle', error: '' }
-	});
-
-	async function requestChallenge(p: 'luma' | 'instagram') {
-		const s = inline[p];
-		if (!s.username.trim()) return;
-		s.error = '';
-		s.step = 'busy';
-		const res = await fetch(`/api/link/${p}/challenge`, {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({ username: s.username.trim() })
-		});
-		if (!res.ok) {
-			s.error = await res.text();
-			s.step = 'idle';
-			return;
-		}
-		const { nonce } = await res.json();
-		s.nonce = nonce;
-		s.step = 'challenge';
-	}
-
-	async function verify(p: 'luma' | 'instagram') {
-		const s = inline[p];
-		s.error = '';
-		s.step = 'busy';
-		const res = await fetch(`/api/link/${p}/verify`, {
-			method: 'POST',
-			headers: { 'content-type': 'application/json' },
-			body: JSON.stringify({ username: s.username.trim() })
-		});
-		if (!res.ok) {
-			s.error = await res.text();
-			s.step = 'challenge';
-			return;
-		}
-		await invalidateAll();
-	}
-
-	const inlineProviders: { provider: 'luma' | 'instagram'; label: string; Icon?: Component }[] = [
-		{ provider: 'luma', label: 'Luma' },
-		{ provider: 'instagram', label: 'Instagram', Icon: InstagramIcon }
-	];
 </script>
 
-<div class="mx-auto flex w-full max-w-xl flex-col gap-8 px-6 py-16">
-	<header class="flex flex-col gap-2">
-		<h1 class="font-montserrat text-3xl font-bold text-foreground">Identity Hub</h1>
-		<div class="flex items-center justify-between">
-			<span class="font-inter text-sm text-muted">{short(data.user.walletAddress)}</span>
-			<Button variant="ghost" size="sm" class="text-muted hover:text-foreground" onclick={doLogout}>
-				Log out
-			</Button>
-		</div>
-	</header>
+<svelte:head>
+	<title>Identity Hub · ETHJKT</title>
+</svelte:head>
 
+<PageHero
+	eyebrow="Member hub"
+	title="Your ETHJKT identity"
+	sub="Link your community accounts in one place. Link the required ones to unlock free testnet gas."
+>
+	{#snippet aside()}
+		<MembershipCard
+			walletAddress={data.user.walletAddress}
+			providers={cardProviders}
+			{requiredLinked}
+			requiredTotal={requiredList.length}
+		/>
+	{/snippet}
+</PageHero>
+
+<div class="relative mx-auto -mt-6 flex max-w-5xl flex-col gap-10 px-5 pb-24">
 	{#if banner}
-		<div
-			class="rounded-2xl px-4 py-3 font-inter text-sm {banner.kind === 'ok'
-				? 'bg-secondary text-secondary-foreground'
-				: 'bg-primary text-primary-foreground'}"
-		>
-			{banner.text}
-		</div>
+		<Notice tone={banner.tone}>{banner.text}</Notice>
 	{/if}
 
-	<ul class="flex flex-col gap-4">
-		{#each oauth as { provider, label, href, Icon } (provider)}
-			{@const acct = linked.get(provider)}
-			<li class="flex flex-col gap-3 rounded-2xl border border-muted/20 px-5 py-4">
-				<div class="flex items-center justify-between gap-4">
-					<div class="flex items-center gap-3">
-						<Icon class="h-6 w-6 text-foreground" />
-						<span class="font-inter font-semibold text-foreground">{label}</span>
-					</div>
-					{#if acct}
-						{@const meta = acct.metadata as {
-							avatarUrl?: string | null;
-							nick?: string | null;
-							roles?: string[];
-							is_member?: boolean;
-						}}
-						{@const live = provider === 'discord' ? discordLive : null}
-						{@const isMember = live ? live.isMember : meta.is_member}
-						{@const roleCount = live ? live.roles.length : (meta.roles?.length ?? 0)}
-						<div class="flex items-center gap-3 font-inter text-sm text-muted">
-							{#if meta.avatarUrl}
-								<img
-									src={meta.avatarUrl}
-									alt=""
-									class="h-8 w-8 rounded-full border border-muted/20 object-cover"
-								/>
-							{/if}
-							<div class="flex flex-col items-end leading-tight">
-								<span class="flex items-center gap-1 text-foreground">
-									{meta.nick || acct.username || 'linked'}
-									<svg class="h-4 w-4 text-secondary" viewBox="0 0 20 20" fill="currentColor">
-										<path
-											fill-rule="evenodd"
-											d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.8 3.8 6.8-6.8a1 1 0 0 1 1.4 0Z"
-											clip-rule="evenodd"
-										/>
-									</svg>
-								</span>
-								<span class="flex items-center gap-2 text-xs">
-									{#if isMember}<span class="text-secondary">ethjkt member</span>{/if}
-									{#if roleCount}
-										{#if live}
-											<button
-												type="button"
-												class="underline underline-offset-2 hover:text-foreground"
-												onclick={() => (rolesOpen = !rolesOpen)}
-											>
-												{roleCount} roles {rolesOpen ? '▾' : '▸'}
-											</button>
-										{:else}
-											<span>{roleCount} roles</span>
-										{/if}
-									{/if}
-									<a {href} class="underline underline-offset-2 hover:text-foreground">Reconnect</a>
-								</span>
-							</div>
-						</div>
-					{:else}
-						<Button {href} variant="secondary" size="sm">Connect</Button>
-					{/if}
-				</div>
+	<!-- Always one obvious next action. -->
+	{#if unlocked}
+		<section
+			aria-label="Next step"
+			class="flex flex-wrap items-center justify-between gap-4 rounded-[28px] bg-primary px-6 py-5 text-primary-foreground shadow-cta"
+		>
+			<div>
+				<p class="font-montserrat text-h4 font-bold">Gas Tanks unlocked</p>
+				<p class="mt-1 text-sm">
+					Claim free testnet ETH on Sepolia and Base Sepolia, once per chain per day.
+				</p>
+			</div>
+			<Button href="/faucet" variant="tertiary">Claim testnet gas →</Button>
+		</section>
+	{:else if nextUp}
+		<section
+			aria-label="Next step"
+			class="flex flex-wrap items-center justify-between gap-4 rounded-[28px] bg-background px-6 py-5 shadow-soft-ring"
+		>
+			<div>
+				<p class="text-label font-bold text-muted uppercase">Next step</p>
+				<p class="mt-1 font-montserrat text-h4 font-bold text-foreground">
+					Link {nextUp.label}
+					<span class="font-inter text-sm font-normal text-muted">
+						· {requiredList.length - requiredLinked} left to unlock Gas Tanks
+					</span>
+				</p>
+			</div>
+			<Button href="#provider-{nextUp.id}">Start</Button>
+		</section>
+	{/if}
 
-				{#if provider === 'discord' && discordLive && rolesOpen && discordLive.roles.length}
-					<ul class="flex flex-wrap gap-2 border-t border-muted/15 pt-3">
-						{#each discordLive.roles as role (role.name)}
-							<li
-								class="flex items-center gap-1.5 rounded-full border border-muted/20 px-3 py-1 font-inter text-xs text-foreground"
-							>
-								<span
-									class="h-2.5 w-2.5 rounded-full"
-									style="background-color: {role.colorHex ?? '#99aab5'}"
-								></span>
-								{role.name}
-							</li>
-						{/each}
-					</ul>
-				{/if}
-			</li>
-		{/each}
+	<section aria-labelledby="required-title">
+		<h2 id="required-title" class="font-montserrat text-h3 font-bold text-foreground">
+			Required for Gas Tanks
+		</h2>
+		<p class="mt-1 text-sm text-muted">{requiredLinked} of {requiredList.length} linked</p>
+		<div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+			{#each requiredList as provider (provider.id)}
+				<ProviderCard
+					{provider}
+					account={linked.get(provider.id)}
+					required
+					discordLive={data.discordLive ?? null}
+				/>
+			{/each}
+		</div>
+	</section>
 
-		{#each inlineProviders as { provider, label, Icon } (provider)}
-			{@const acct = linked.get(provider)}
-			{@const s = inline[provider]}
-			<li class="flex flex-col gap-3 rounded-2xl border border-muted/20 px-5 py-4">
-				<div class="flex items-center justify-between gap-4">
-					<div class="flex items-center gap-3">
-						{#if Icon}<Icon class="h-6 w-6 text-foreground" />{/if}
-						<span class="font-inter font-semibold text-foreground">{label}</span>
-					</div>
-					{#if acct}
-						<span class="flex items-center gap-2 font-inter text-sm text-muted">
-							{acct.username ?? 'linked'}
-							<svg class="h-5 w-5 text-secondary" viewBox="0 0 20 20" fill="currentColor">
-								<path
-									fill-rule="evenodd"
-									d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.8 3.8 6.8-6.8a1 1 0 0 1 1.4 0Z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-						</span>
-					{/if}
-				</div>
-
-				{#if !acct}
-					{#if s.step !== 'challenge'}
-						<div class="flex gap-2">
-							<input
-								class="min-w-0 flex-1 rounded-full border border-muted/30 bg-background px-4 py-2 font-inter text-sm text-foreground outline-none focus:border-secondary"
-								placeholder="{label} username"
-								bind:value={s.username}
-								disabled={s.step === 'busy'}
-							/>
-							<Button
-								variant="secondary"
-								size="sm"
-								disabled={s.step === 'busy' || !s.username.trim()}
-								onclick={() => requestChallenge(provider)}
-							>
-								Connect
-							</Button>
-						</div>
-					{:else}
-						<p class="font-inter text-sm text-muted">Paste this into your {label} bio:</p>
-						<code
-							class="block rounded-xl bg-tertiary px-4 py-2 font-inter text-sm break-all text-tertiary-foreground"
-							>{s.nonce}</code
-						>
-						<Button
-							variant="primary"
-							size="sm"
-							disabled={inline[provider].step === 'busy'}
-							onclick={() => verify(provider)}
-						>
-							I've added it
-						</Button>
-					{/if}
-
-					{#if s.error}
-						<p class="font-inter text-sm text-primary">{s.error}</p>
-					{/if}
-				{/if}
-			</li>
-		{/each}
-	</ul>
+	{#if optionalList.length}
+		<section aria-labelledby="optional-title">
+			<h2 id="optional-title" class="font-montserrat text-h3 font-bold text-foreground">
+				Optional
+			</h2>
+			<div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+				{#each optionalList as provider (provider.id)}
+					<ProviderCard {provider} account={linked.get(provider.id)} required={false} />
+				{/each}
+			</div>
+		</section>
+	{/if}
 </div>
